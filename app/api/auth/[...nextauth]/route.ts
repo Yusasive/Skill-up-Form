@@ -19,22 +19,43 @@ export const authOptions: AuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
+        console.log('Credentials received:', credentials);
+
         if (!credentials?.email || !credentials?.password) {
+          console.log('Missing email or password');
           return null;
         }
 
         const { db }: { db: Db } = await connectToDatabase();
 
-        const admin = await db.collection<AdminUser>('admins').findOne({ email: credentials.email });
+        let admin = await db.collection<AdminUser>('admins').findOne({ email: credentials.email });
+
         if (!admin) {
-          return null;
+          console.log('Admin not found. Creating a new admin...');
+
+          const hashedPassword = await bcrypt.hash(credentials.password, 10);
+
+          const result = await db.collection('admins').insertOne({
+            email: credentials.email,
+            password: hashedPassword,
+          });
+
+          admin = {
+            _id: result.insertedId.toString(),
+            email: credentials.email,
+            password: hashedPassword,
+          };
+
+          console.log('New admin created:', admin);
         }
 
         const isValidPassword = await bcrypt.compare(credentials.password, admin.password);
         if (!isValidPassword) {
+          console.log('Invalid password');
           return null;
         }
 
+        console.log('Authorization successful');
         return { id: admin._id.toString(), email: admin.email };
       },
     }),

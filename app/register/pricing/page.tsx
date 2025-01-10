@@ -1,91 +1,97 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 type CourseDetails = {
   price: number;
   description: string;
 };
 
-const courseDetails: Record<'Frontend Development' | 'Backend Development' | 'UI/UX Design', CourseDetails> = {
-  'Frontend Development': {
+const courseDetails: Record<
+  "Frontend Development" | "Backend Development" | "UI/UX Design",
+  CourseDetails
+> = {
+  "Frontend Development": {
     price: 200,
-    description: 'Learn the basics of HTML, CSS, JavaScript, React, and build stunning interfaces.',
+    description:
+      "Learn the basics of HTML, CSS, JavaScript, React, and build stunning interfaces.",
   },
-  'Backend Development': {
+  "Backend Development": {
     price: 250,
-    description: 'Master server-side programming with Node.js, databases, and REST APIs.',
+    description:
+      "Master server-side programming with Node.js, databases, and REST APIs.",
   },
-  'UI/UX Design': {
+  "UI/UX Design": {
     price: 180,
-    description: 'Understand user-centered design principles and create intuitive user interfaces.',
+    description:
+      "Understand user-centered design principles and create intuitive user interfaces.",
   },
 };
 
 export default function PricingPage() {
   const router = useRouter();
   const [userData, setUserData] = useState<any>(null);
-  const [selectedSkill, setSelectedSkill] = useState<keyof typeof courseDetails>('Frontend Development');
+  const [selectedSkill, setSelectedSkill] = useState<
+    keyof typeof courseDetails
+  >("Frontend Development");
   const [originalPrice, setOriginalPrice] = useState<number>(0);
   const [discountedPrice, setDiscountedPrice] = useState<number>(0);
-  const [couponCode, setCouponCode] = useState<string>('');
+  const [couponCode, setCouponCode] = useState<string>("");
   const [isCouponApplied, setIsCouponApplied] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    const data = sessionStorage.getItem('userData');
+    const data = sessionStorage.getItem("userData");
     if (data) {
       const parsedData = JSON.parse(data);
       setUserData(parsedData);
 
       if (parsedData.skills in courseDetails) {
-        const skillDetails = courseDetails[parsedData.skills as keyof typeof courseDetails];
+        const skillDetails =
+          courseDetails[parsedData.skills as keyof typeof courseDetails];
         setSelectedSkill(parsedData.skills as keyof typeof courseDetails);
         setOriginalPrice(skillDetails.price);
         setDiscountedPrice(skillDetails.price);
       } else {
-        setError('Selected course not available.');
+        setError("Selected course not available.");
       }
     } else {
-      router.push('/register');
+      router.push("/register");
     }
   }, [router]);
 
   const handleApplyCoupon = async () => {
     const trimmedCoupon = couponCode.trim();
+
     if (!trimmedCoupon) {
-      setError('Please enter a valid coupon code.');
+      setError("Please enter a valid coupon code.");
       return;
     }
 
     try {
-      const response = await fetch('/api/validate-coupon', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ couponCode: trimmedCoupon, originalPrice }),
-      });
-
-      const data = await response.json();
+      const response = await fetch(`/api/coupons?code=${trimmedCoupon}`);
 
       if (response.ok) {
-        setDiscountedPrice(data.newPrice);
+        const { discountPercentage } = await response.json();
+        const newPrice =
+          originalPrice - (originalPrice * discountPercentage) / 100;
+        setDiscountedPrice(newPrice);
         setIsCouponApplied(true);
-        setError('');
+        setError("");
       } else {
-        setError(data.message || 'Invalid coupon code.');
+        const errorData = await response.json();
+        setError(errorData.error || "Invalid coupon code.");
       }
     } catch (err) {
-      console.error('Error applying coupon:', err);
-      setError('Failed to apply coupon. Please try again.');
+      console.error("Error validating coupon:", err);
+      setError("Failed to apply coupon. Please try again.");
     }
   };
 
   const handleNext = () => {
     if (!selectedSkill || !originalPrice || !discountedPrice) {
-      alert('Please ensure all course details are available.');
+      alert("Please ensure all course details are available.");
       return;
     }
 
@@ -96,8 +102,8 @@ export default function PricingPage() {
       couponCode: isCouponApplied ? couponCode : null,
     };
 
-    sessionStorage.setItem('userData', JSON.stringify(updatedData));
-    router.push('/register/payment');
+    sessionStorage.setItem("userData", JSON.stringify(updatedData));
+    router.push("/register/payment");
   };
 
   if (!userData) {
@@ -110,16 +116,22 @@ export default function PricingPage() {
 
       <div className="mb-6">
         <h2 className="text-xl font-semibold">{selectedSkill}</h2>
-        <p className="text-gray-700">{courseDetails[selectedSkill]?.description}</p>
+        <p className="text-gray-700">
+          {courseDetails[selectedSkill]?.description}
+        </p>
       </div>
 
       <div className="mb-6">
         <h3 className="text-lg font-medium">Price</h3>
         <div className="flex items-center space-x-4">
           {isCouponApplied && (
-            <span className="text-gray-500 line-through text-sm">${originalPrice.toFixed(2)}</span>
+            <span className="text-gray-500 line-through text-sm">
+              #{originalPrice.toFixed(2)}
+            </span>
           )}
-          <span className="text-2xl font-bold text-green-600">${discountedPrice.toFixed(2)}</span>
+          <span className="text-2xl font-bold text-green-600">
+            #{discountedPrice.toFixed(2)}
+          </span>
         </div>
       </div>
 
@@ -136,8 +148,7 @@ export default function PricingPage() {
           <button
             type="button"
             onClick={handleApplyCoupon}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-          >
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
             Apply
           </button>
         </div>
@@ -147,16 +158,14 @@ export default function PricingPage() {
       <div className="flex justify-end space-x-4">
         <button
           type="button"
-          onClick={() => router.push('/register')}
-          className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300"
-        >
+          onClick={() => router.push("/register")}
+          className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">
           Back
         </button>
         <button
           type="button"
           onClick={handleNext}
-          className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
-        >
+          className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
           Next
         </button>
       </div>

@@ -2,17 +2,25 @@
 
 import { useState, useEffect } from 'react';
 
+type Coupon = {
+  _id: string;
+  code: string;
+  discountPercentage: number;
+  expiryDate: string;
+};
+
 export default function CouponsPage() {
-  const [coupons, setCoupons] = useState([]);
-  const [code, setCode] = useState('');
-  const [discount, setDiscount] = useState(0);
-  const [expiryDate, setExpiryDate] = useState('');
+  const [coupons, setCoupons] = useState<Coupon[]>([]); // Explicit type for coupons
+  const [code, setCode] = useState<string>('');
+  const [discount, setDiscount] = useState<number>(0);
+  const [expiryDate, setExpiryDate] = useState<string>('');
 
   useEffect(() => {
     async function fetchCoupons() {
       const response = await fetch('/api/coupons');
       const data = await response.json();
-      setCoupons(data);
+      console.log('Fetched Coupons:', data); // Debug log
+      setCoupons(Array.isArray(data) ? data : []); // Ensure data is an array
     }
     fetchCoupons();
   }, []);
@@ -26,6 +34,8 @@ export default function CouponsPage() {
 
     if (response.ok) {
       alert('Coupon created successfully!');
+      const newCoupon: Coupon = await response.json(); // Ensure new coupon matches the type
+      setCoupons((prev) => [...prev, newCoupon]); // Add new coupon to state
     }
   };
 
@@ -69,15 +79,21 @@ export default function CouponsPage() {
           </tr>
         </thead>
         <tbody>
-          {coupons.map((coupon: any) => (
-            <tr key={coupon._id}>
-              <td className="border border-gray-300 px-4 py-2">{coupon.code}</td>
-              <td className="border border-gray-300 px-4 py-2">{coupon.discountPercentage}%</td>
-              <td className="border border-gray-300 px-4 py-2">
-                {new Date(coupon.expiryDate).toLocaleDateString()}
-              </td>
+          {coupons.length > 0 ? (
+            coupons.map((coupon) => (
+              <tr key={coupon._id}>
+                <td className="border border-gray-300 px-4 py-2">{coupon.code}</td>
+                <td className="border border-gray-300 px-4 py-2">{coupon.discountPercentage}%</td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {new Date(coupon.expiryDate).toLocaleDateString()}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={3} className="text-center py-4">No coupons available.</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>

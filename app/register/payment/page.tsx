@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FlutterWaveButton, closePaymentModal } from '@flutterwave/react-flutterwave';
+import { FlutterWaveButton, closePaymentModal } from 'flutterwave-react-v3';
 
 export default function PaymentPage() {
   const router = useRouter();
@@ -13,7 +13,7 @@ export default function PaymentPage() {
     if (storedData) {
       setUserData(JSON.parse(storedData));
     } else {
-      router.push('/register');
+      router.push('/register'); 
     }
   }, [router]);
 
@@ -31,22 +31,23 @@ export default function PaymentPage() {
   }
 
   const config = {
-    public_key: process.env.NEXT_PUBLIC_FLUTTERWAVE_PUBLIC_KEY as string, 
-    tx_ref: `rave-${Date.now()}`, 
-    amount: discountedPrice || originalPrice, 
-    currency: 'USD', 
-    payment_options: 'card, mobilemoneyghana, ussd', 
+    public_key: process.env.NEXT_PUBLIC_FLUTTERWAVE_PUBLIC_KEY as string,
+    tx_ref: `rave-${Date.now()}`,
+    amount: discountedPrice || originalPrice,
+    currency: 'NGN', 
+    payment_options: 'card, banktransfer, ussd', 
     customer: {
-      email: email,
+      email: email, 
       phone_number: phone,
-      name: name,
+      name: name, 
     },
     customizations: {
-      title: 'SkillUp Payment',
-      description: `Payment for ${skills} course`,
+      title: 'SkillUp Payment', 
+      description: `Payment for ${skills} course`, 
       logo: '/logo.png', 
     },
   };
+  
 
   const fwConfig = {
     ...config,
@@ -94,11 +95,11 @@ export default function PaymentPage() {
         Total Amount:
         {discountedPrice ? (
           <>
-            <span className="line-through text-red-500 mr-2">${originalPrice.toFixed(2)}</span>
-            <span className="font-bold">${discountedPrice.toFixed(2)}</span>
+            <span className="line-through text-red-500 mr-2">#{originalPrice.toFixed(2)}</span>
+            <span className="font-bold">#{discountedPrice.toFixed(2)}</span>
           </>
         ) : (
-          <span className="font-bold">${originalPrice.toFixed(2)}</span>
+          <span className="font-bold">#{originalPrice.toFixed(2)}</span>
         )}
       </p>
 
