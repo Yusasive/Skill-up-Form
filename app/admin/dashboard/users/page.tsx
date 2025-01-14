@@ -1,48 +1,93 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+import SkillsOverview from "@/components/dashboard/SkillsOverview";
+import UsersTable from "@/components/dashboard/UsersTable";
+import UserDetailsModal from "@/components/dashboard/UserDetailsModal";
+import { User, Skill } from "@/types/types";
 
 export default function UsersPage() {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [skills, setSkills] = useState<Skill[]>([]);
+  const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchUsers() {
-      const response = await fetch('/api/users');
-      const data = await response.json();
-      setUsers(data);
-      setLoading(false);
+    async function fetchData() {
+      try {
+        const usersResponse = await fetch("/api/users");
+        const usersData = await usersResponse.json();
+        setUsers(usersData);
+
+        const skillsMap: { [key: string]: number } = {};
+        usersData.forEach((user: User) => {
+          user.skills.forEach((skill) => {
+            skillsMap[skill] = (skillsMap[skill] || 0) + 1;
+          });
+        });
+
+        const skillsArray = Object.entries(skillsMap).map(([name, count]) => ({
+          name,
+          count,
+        }));
+        setSkills(skillsArray);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
     }
-    fetchUsers();
+
+    fetchData();
   }, []);
 
+  const handlePaymentStatusChange = async (
+    userId: string,
+    newStatus: string
+  ) => {
+    try {
+      const response = await fetch(`/api/users/${userId}/payment-status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paymentStatus: newStatus }),
+      });
+
+      if (!response.ok) throw new Error("Failed to update payment status.");
+
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user._id === userId ? { ...user, paymentStatus: newStatus } : user
+        )
+      );
+    } catch (error) {
+      console.error("Error updating payment status:", error);
+    }
+  };
+
   if (loading) {
-    return <p>Loading users...</p>;
+    return <p>Loading...</p>;
   }
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Registered Users</h1>
-      <table className="w-full border-collapse border border-gray-300">
-        <thead>
-          <tr>
-            <th className="border border-gray-300 px-4 py-2">Name</th>
-            <th className="border border-gray-300 px-4 py-2">Email</th>
-            <th className="border border-gray-300 px-4 py-2">Payment Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user: any) => (
-            <tr key={user._id}>
-              <td className="border border-gray-300 px-4 py-2">{user.name}</td>
-              <td className="border border-gray-300 px-4 py-2">{user.email}</td>
-              <td className="border border-gray-300 px-4 py-2">
-                {user.paymentStatus ? 'Paid' : 'Pending'}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
+
+      <SkillsOverview skills={skills} setSelectedSkill={setSelectedSkill} />
+
+      {selectedSkill && (
+        <UsersTable
+          users={users}
+          selectedSkill={selectedSkill}
+          handlePaymentStatusChange={handlePaymentStatusChange}
+          setSelectedUser={(user: User) => setSelectedUser(user)} // Wrap for compatibility
+        />
+      )}
+
+      <UserDetailsModal
+        selectedUser={selectedUser}
+        setSelectedUser={setSelectedUser}
+      />
     </div>
   );
 }

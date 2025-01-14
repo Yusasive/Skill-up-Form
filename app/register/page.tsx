@@ -9,19 +9,19 @@ import { useRouter } from "next/navigation";
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
-  gender: z
-    .enum(["Male", "Female", "Other"])
-    .refine((val) => val, { message: "Gender is required" }),
+  gender: z.enum(["Male", "Female", "Other"], {
+    required_error: "Gender is required",
+  }),
   phone: z.string().min(10, "Phone number must be at least 10 digits"),
   skills: z.string().min(1, "Preferred skill is required"),
   faculty: z.string().min(1, "Faculty is required"),
   department: z.string().min(1, "Department is required"),
-  age: z
-    .enum(["18-25", "26-35", "36-45", "46+"])
-    .refine((val) => val, { message: "Age range is required" }),
-  weeklyCommitment: z
-    .enum(["Yes", "No"])
-    .refine((val) => val, { message: "This field is required" }),
+  age: z.enum(["18-25", "26-35", "36-45", "46+"], {
+    required_error: "Age range is required",
+  }),
+  weeklyCommitment: z.enum(["Yes", "No"], {
+    required_error: "This field is required",
+  }),
   interestReason: z.string().min(1, "Reason is required"),
   comments: z.string().optional(),
 });
@@ -88,7 +88,8 @@ export default function UserDetailsForm() {
           <label className="block text-sm font-medium">Gender</label>
           <select
             {...register("gender")}
-            className="w-full mt-1 border rounded-md p-2">
+            className="w-full mt-1 border rounded-md p-2"
+          >
             <option value="">Select your gender</option>
             {genders.map((gender) => (
               <option key={gender} value={gender}>
@@ -120,7 +121,8 @@ export default function UserDetailsForm() {
           <select
             {...register("skills")}
             className="w-full mt-1 border rounded-md p-2"
-            onChange={(e) => setSelectedSkill(e.target.value)}>
+            onChange={(e) => setSelectedSkill(e.target.value)}
+          >
             <option value="">Select a skill</option>
             {skills.map((skill) => (
               <option key={skill} value={skill}>
@@ -235,7 +237,8 @@ export default function UserDetailsForm() {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700">
+          className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700"
+        >
           Next
         </button>
       </form>

@@ -1,28 +1,29 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { FlutterWaveButton, closePaymentModal } from 'flutterwave-react-v3';
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { FlutterWaveButton, closePaymentModal } from "flutterwave-react-v3";
 
 export default function PaymentPage() {
   const router = useRouter();
   const [userData, setUserData] = useState<any>(null);
 
   useEffect(() => {
-    const storedData = sessionStorage.getItem('userData');
+    const storedData = sessionStorage.getItem("userData");
     if (storedData) {
       setUserData(JSON.parse(storedData));
     } else {
-      router.push('/register'); 
+      router.push("/register");
     }
   }, [router]);
 
-  if (!userData) return null; 
+  if (!userData) return null;
 
-  const { name, email, phone, discountedPrice, originalPrice, skills } = userData;
+  const { name, email, phone, discountedPrice, originalPrice, skills } =
+    userData;
 
   if (!process.env.NEXT_PUBLIC_FLUTTERWAVE_PUBLIC_KEY) {
-    console.error('Flutterwave public key is not defined. Check .env setup.');
+    console.error("Flutterwave public key is not defined. Check .env setup.");
     return (
       <div className="p-4 text-red-500">
         Payment integration is misconfigured. Please contact support.
@@ -34,54 +35,60 @@ export default function PaymentPage() {
     public_key: process.env.NEXT_PUBLIC_FLUTTERWAVE_PUBLIC_KEY as string,
     tx_ref: `rave-${Date.now()}`,
     amount: discountedPrice || originalPrice,
-    currency: 'NGN', 
-    payment_options: 'card, banktransfer, ussd', 
+    currency: "NGN",
+    payment_options: "card, banktransfer, ussd",
     customer: {
-      email: email, 
+      email: email,
       phone_number: phone,
-      name: name, 
+      name: name,
     },
     customizations: {
-      title: 'SkillUp Payment', 
-      description: `Payment for ${skills} course`, 
-      logo: '/logo.png', 
+      title: "SkillUp Payment",
+      description: `Payment for ${skills} course`,
+      logo: "/logo.png",
     },
   };
-  
 
   const fwConfig = {
     ...config,
     callback: async (response: any) => {
-      if (response.status === 'successful') {
-        console.log('Payment successful:', response);
+      if (response.status === "successful") {
+        console.log("Payment successful:", response);
 
         try {
-          const res = await fetch('/api/payment/confirm', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ transactionId: response.transaction_id, userData }),
+          const res = await fetch("/api/payment/confirm", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              transactionId: response.transaction_id,
+              userData, // Ensure userData contains the necessary details
+            }),
           });
 
           if (res.ok) {
-            console.log('Payment confirmation successful.');
-            alert('Payment successful!');
-
-            closePaymentModal(); 
-            router.push('/register/success');
+            console.log("Payment confirmation successful.");
+            alert("Payment successful!");
+            closePaymentModal();
+            router.push("/register/success");
           } else {
-            console.error('Payment confirmation failed.');
-            alert('Payment was successful, but we could not confirm it. Please contact support.');
+            const errorData = await res.json();
+            console.error("Payment confirmation failed:", errorData);
+            alert(
+              `Payment was successful, but we could not confirm it. Reason: ${errorData.error || "Unknown error."}`
+            );
           }
         } catch (error) {
-          console.error('Error confirming payment:', error);
-          alert('An error occurred while confirming payment. Please contact support.');
+          console.error("Error confirming payment:", error);
+          alert(
+            "An error occurred while confirming payment. Please contact support."
+          );
         }
       } else {
-        alert('Payment failed or was canceled.');
+        alert("Payment failed or was canceled.");
       }
     },
     onClose: () => {
-      console.log('Payment modal closed.');
+      console.log("Payment modal closed.");
     },
   };
 
@@ -95,7 +102,9 @@ export default function PaymentPage() {
         Total Amount:
         {discountedPrice ? (
           <>
-            <span className="line-through text-red-500 mr-2">#{originalPrice.toFixed(2)}</span>
+            <span className="line-through text-red-500 mr-2">
+              #{originalPrice.toFixed(2)}
+            </span>
             <span className="font-bold">#{discountedPrice.toFixed(2)}</span>
           </>
         ) : (

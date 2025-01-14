@@ -1,10 +1,22 @@
+"use client";
+
+import router from "next/router";
+
 export default function SuccessPage() {
-    return (
-      <div className="max-w-3xl mx-auto p-4">
-        <h1 className="text-2xl font-bold text-green-600 mb-4">Payment Successful!</h1>
-        <p>Thank you for registering for the SkillUp program.</p>
-        <p>We’ve received your payment, and you’re now enrolled in the course.</p>
-      </div>
-    );
-  }
-  
+  return (
+    <div className="max-w-3xl mx-auto p-4 text-center">
+      <h1 className="text-3xl font-bold text-green-600">
+        Registration Successful!
+      </h1>
+      <p className="mt-4">
+        Thank you for registering. We look forward to seeing you in the class!
+      </p>
+      <button
+        onClick={() => router.push("/")}
+        className="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      >
+        Go Home
+      </button>
+    </div>
+  );
+}

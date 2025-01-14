@@ -148,7 +148,8 @@ export default function PricingPage() {
           <button
             type="button"
             onClick={handleApplyCoupon}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+          >
             Apply
           </button>
         </div>
@@ -159,13 +160,15 @@ export default function PricingPage() {
         <button
           type="button"
           onClick={() => router.push("/register")}
-          className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">
+          className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300"
+        >
           Back
         </button>
         <button
           type="button"
           onClick={handleNext}
-          className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
+          className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+        >
           Next
         </button>
       </div>

@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
-import { createCoupon, getCoupon, deleteCoupon } from "@/lib/models/coupon";
+import {
+  createCoupon,
+  getCoupon,
+  getAllCoupons,
+  deleteCouponById,
+  updateCoupon,
+} from "@/lib/models/coupon";
 
 export async function POST(req: Request) {
   const { code, discountPercentage, expiryDate } = await req.json();
@@ -23,53 +29,81 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const code = searchParams.get("code");
 
-  if (!code) {
-    return NextResponse.json(
-      { error: "Coupon code is required" },
-      { status: 400 }
-    );
-  }
-
   try {
-    const coupon = await getCoupon(code);
-
-    if (!coupon) {
-      return NextResponse.json({ error: "Coupon not found" }, { status: 404 });
+    if (code) {
+      const specificCoupon = await getCoupon(code);
+      if (!specificCoupon) {
+        return NextResponse.json(
+          { error: "Coupon not found" },
+          { status: 404 }
+        );
+      }
+      if (new Date(specificCoupon.expiryDate) < new Date()) {
+        return NextResponse.json(
+          { error: "Coupon has expired" },
+          { status: 400 }
+        );
+      }
+      return NextResponse.json({
+        _id: specificCoupon._id,
+        code: specificCoupon.code,
+        discountPercentage: specificCoupon.discountPercentage,
+        expiryDate: specificCoupon.expiryDate,
+      });
+    } else {
+      const coupons = await getAllCoupons();
+      return NextResponse.json(coupons);
     }
-
-    if (new Date(coupon.expiryDate) < new Date()) {
-      return NextResponse.json(
-        { error: "Coupon has expired" },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json({
-      code: coupon.code,
-      discountPercentage: coupon.discountPercentage,
-    });
   } catch (error) {
+    console.error("Error fetching coupons:", error);
     return NextResponse.json(
-      { error: "Failed to fetch coupon" },
+      { error: "Failed to fetch coupons" },
       { status: 500 }
     );
   }
 }
 
 export async function DELETE(req: Request) {
-  const { code } = await req.json();
+  const { code, _id } = await req.json();
 
   try {
-    const success = await deleteCoupon(code);
+    if (_id) {
+      const success = await deleteCouponById(_id);
+      return success
+        ? NextResponse.json({ success: true })
+        : NextResponse.json(
+            { error: "Failed to delete coupon by ID" },
+            { status: 404 }
+          );
+    } else {
+      return NextResponse.json(
+        { error: "No valid identifier provided for deletion" },
+        { status: 400 }
+      );
+    }
+  } catch (error) {
+    console.error("Error deleting coupon:", error);
+    return NextResponse.json(
+      { error: "Failed to delete coupon" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(req: Request) {
+  const { code, updatedFields } = await req.json();
+
+  try {
+    const success = await updateCoupon(code, updatedFields);
     return success
       ? NextResponse.json({ success: true })
       : NextResponse.json(
-          { error: "Failed to delete coupon" },
+          { error: "Failed to update coupon or coupon not found" },
           { status: 404 }
         );
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to delete coupon" },
+      { error: "Failed to update coupon" },
       { status: 500 }
     );
   }
