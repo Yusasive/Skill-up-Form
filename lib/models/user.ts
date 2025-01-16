@@ -29,6 +29,15 @@ export async function getAllUsers() {
   return users;
 }
 
+export async function getUsersBySkill(skillName: string) {
+  const { db } = await connectToDatabase();
+  const users = await db
+    .collection("users")
+    .find({ skills: skillName })
+    .toArray();
+  return users;
+}
+
 export async function updateUserPaymentStatus(userId: string, status: string) {
   const { db } = await connectToDatabase();
   const result = await db

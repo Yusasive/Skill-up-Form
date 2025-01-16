@@ -1,19 +1,20 @@
-export type User = {
-  _id: string;
+export interface User {
+  _id?: string;
   name: string;
   email: string;
   phone: string;
   gender: string;
   age: number;
-  skills: string[];
-  paymentStatus: string;
+  skills: string[] | undefined;
   faculty: string;
   department: string;
-  weeklyCommitment: string;
   interestReason: string;
-  originalPrice: number;
-  discountedPrice: number;
-};
+  paymentStatus: string;
+  comment?: string;
+  weeklyCommitment?: number;
+  originalPrice?: number;
+  discountedPrice?: number;
+}
 
 export type Skill = {
   name: string;

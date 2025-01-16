@@ -1,12 +1,14 @@
-'use client';
+"use client";
 
-import { signIn } from 'next-auth/react';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { signIn, useSession } from "next-auth/react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [error, setError] = useState('');
+  const { data: session, status } = useSession();
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,18 +17,31 @@ export default function AdminLoginPage() {
     const email = form.email.value;
     const password = form.password.value;
 
-    const result = await signIn('credentials', {
+    setLoading(true);
+    setError("");
+
+    const result = await signIn("credentials", {
       redirect: false,
       email,
       password,
     });
 
+    setLoading(false);
+
     if (result?.error) {
       setError(result.error);
     } else {
-      router.push('/admin/dashboard'); 
+      router.push("/admin/dashboard");
     }
   };
+
+  if (status === "loading") {
+    return <div>Loading...</div>; 
+  }
+
+  if (session) {
+    router.push("/admin/dashboard");
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -64,9 +79,10 @@ export default function AdminLoginPage() {
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700"
+          className={`w-full p-2 rounded-md ${loading ? "bg-gray-500" : "bg-blue-600"} text-white hover:bg-blue-700`}
+          disabled={loading}
         >
-          Login
+          {loading ? "Logging in..." : "Login"}
         </button>
       </form>
     </div>

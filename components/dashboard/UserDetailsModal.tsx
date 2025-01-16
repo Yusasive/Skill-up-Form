@@ -1,82 +1,127 @@
 import React from "react";
-
-type User = {
-  _id: string;
-  name: string;
-  email: string;
-  phone: string;
-  gender: string;
-  age: number;
-  skills: string[];
-  paymentStatus: string;
-  faculty: string;
-  department: string;
-  weeklyCommitment: string;
-  interestReason: string;
-  originalPrice: number;
-  discountedPrice: number;
-};
+import {
+  FaUser,
+  FaEnvelope,
+  FaPhone,
+  FaTransgender,
+  FaUniversity,
+  FaCommentDots,
+  FaMoneyBillWave,
+  FaCogs,
+  FaSchool,
+  FaLightbulb,
+} from "react-icons/fa";
+import { FaBaby } from "react-icons/fa6";
 
 type UserDetailsModalProps = {
-  selectedUser: User | null;
-  setSelectedUser: (user: User | null) => void;
+  user: {
+    name: string;
+    email: string;
+    phone: string;
+    gender: string;
+    age: number;
+    skills: string[] | undefined;
+    faculty: string;
+    department: string;
+    interestReason: string;
+    paymentStatus: string;
+    comment?: string;
+  };
+  onClose: () => void;
 };
 
-const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
-  selectedUser,
-  setSelectedUser,
-}) => {
-  if (!selectedUser) return null;
+export default function UserDetailsModal({
+  user,
+  onClose,
+}: UserDetailsModalProps) {
+  const skillList = Array.isArray(user.skills) ? user.skills.join(", ") : "N/A";
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-      <div className="bg-white p-6 rounded shadow-lg w-1/2">
-        <h2 className="text-xl font-semibold mb-4">
-          Details for {selectedUser.name}
-        </h2>
-        <p>
-          <strong>Email:</strong> {selectedUser.email}
-        </p>
-        <p>
-          <strong>Phone:</strong> {selectedUser.phone}
-        </p>
-        <p>
-          <strong>Gender:</strong> {selectedUser.gender}
-        </p>
-        <p>
-          <strong>Age:</strong> {selectedUser.age}
-        </p>
-        <p>
-          <strong>Faculty:</strong> {selectedUser.faculty}
-        </p>
-        <p>
-          <strong>Department:</strong> {selectedUser.department}
-        </p>
-        <p>
-          <strong>Weekly Commitment:</strong> {selectedUser.weeklyCommitment}
-        </p>
-        <p>
-          <strong>Interest Reason:</strong> {selectedUser.interestReason}
-        </p>
-        <p>
-          <strong>Original Price:</strong> ${selectedUser.originalPrice}
-        </p>
-        <p>
-          <strong>Discounted Price:</strong> ${selectedUser.discountedPrice}
-        </p>
-        <p>
-          <strong>Payment Status:</strong> {selectedUser.paymentStatus}
-        </p>
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      role="dialog"
+      aria-labelledby="user-details-modal"
+      aria-modal="true"
+    >
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full border-2 border-green-500 animate-fade-in">
+        {/* Header */}
+        <h3
+          id="user-details-modal"
+          className="text-2xl font-bold text-green-600 mb-4 text-center border-b pb-2"
+        >
+          User Details
+        </h3>
 
+        {/* Content */}
+        <div className="space-y-4 text-gray-700 overflow-y-auto max-h-96">
+          <p className="flex items-center">
+            <FaUser className="mr-2 text-green-600" />
+            <span className="font-semibold">Name:</span> {user.name}
+          </p>
+          <p className="flex items-center">
+            <FaEnvelope className="mr-2 text-green-600" />
+            <span className="font-semibold">Email:</span> {user.email}
+          </p>
+          <p className="flex items-center">
+            <FaPhone className="mr-2 text-green-600" />
+            <span className="font-semibold">Phone:</span> {user.phone}
+          </p>
+          <p className="flex items-center">
+            <FaTransgender className="mr-2 text-green-600" />
+            <span className="font-semibold">Gender:</span> {user.gender}
+          </p>
+          <p className="flex items-center">
+            <FaBaby className="mr-2 text-green-600" />
+            <span className="font-semibold">Age:</span> {user.age}
+          </p>
+          <p className="flex items-center">
+            <FaCogs className="mr-2 text-green-600" />
+            <span className="font-semibold">Skills:</span> {skillList}
+          </p>
+          <p className="flex items-center">
+            <FaUniversity className="mr-2 text-green-600" />
+            <span className="font-semibold">Faculty:</span> {user.faculty}
+          </p>
+          <p className="flex items-center">
+            <FaSchool className="mr-2 text-green-600" />
+            <span className="font-semibold">Department:</span> {user.department}
+          </p>
+          <p className="flex items-center">
+            <FaLightbulb className="mr-2 text-green-600" />
+            <span className="font-semibold">Reason for Interest:</span>{" "}
+            {user.interestReason}
+          </p>
+          {user.comment && (
+            <p className="flex items-center">
+              <FaCommentDots className="mr-2 text-green-600" />
+              <span className="font-semibold">Comment:</span> {user.comment}
+            </p>
+          )}
+          <p className="flex items-center">
+            <FaMoneyBillWave className="mr-2 text-green-600" />
+            <span className="font-semibold">Payment Status:</span>{" "}
+            <span
+              className={`px-3 py-1 rounded text-white text-sm font-semibold ${
+                user.paymentStatus === "Paid"
+                  ? "bg-green-600"
+                  : user.paymentStatus === "Pending"
+                    ? "bg-yellow-500"
+                    : "bg-red-500"
+              }`}
+            >
+              {user.paymentStatus}
+            </span>
+          </p>
+        </div>
+
+        {/* Close Button */}
         <button
-          className="text-red-600 hover:underline mt-4"
-          onClick={() => setSelectedUser(null)}
+          className="mt-6 w-full bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded transition-transform transform hover:scale-105"
+          onClick={onClose}
         >
           Close
         </button>
       </div>
     </div>
   );
-};
-
-export default UserDetailsModal;
+}
