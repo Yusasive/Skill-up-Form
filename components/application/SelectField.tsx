@@ -13,17 +13,22 @@ const SelectField: React.FC<SelectFieldProps> = ({
   register,
   error,
 }) => (
-  <div>
-    <label className="block text-sm font-medium">{label}</label>
-    <select {...register} className="w-full mt-1 border rounded-md p-2">
+  <div className="mb-4">
+    <label className="block text-sm font-medium text-green-800">{label}</label>
+    <select
+      {...register}
+      className={`w-full mt-1 border rounded-md p-2 bg-white text-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+        error ? "border-red-500" : "border-green-300"
+      }`}
+    >
       <option value="">Select an option</option>
       {options.map((option) => (
-        <option key={option} value={option}>
+        <option key={option} value={option} className="text-green-800">
           {option}
         </option>
       ))}
     </select>
-    {error && <p className="text-red-500 text-sm">{error}</p>}
+    {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
   </div>
 );
 
