@@ -53,7 +53,7 @@ export default function UsersPage() {
           throw new Error("Failed to fetch users data.");
         }
         const usersData = await usersResponse.json();
-        setUsers(usersData); // Ensure this matches the User type
+        setUsers(usersData); 
       } catch (error) {
         setError("Failed to load users. Please try again.");
       } finally {
@@ -66,7 +66,7 @@ export default function UsersPage() {
 
   const handleSkillClick = (skillName: string) => {
     setSelectedSkill(skillName);
-    setError(null); // Clear any error messages when a new skill is selected
+    setError(null);
   };
 
   return (
@@ -114,7 +114,7 @@ export default function UsersPage() {
             <UsersTable
               users={users}
               skillName={selectedSkill}
-              onUserClick={(user) => setSelectedUser(user)} // Ensure the user clicked matches the correct type
+              onUserClick={(user) => setSelectedUser(user)} 
             />
           )}
         </section>
@@ -124,7 +124,7 @@ export default function UsersPage() {
       {selectedUser && (
         <UserDetailsModal
           user={selectedUser}
-          onClose={() => setSelectedUser(null)} // Handle closing the modal and resetting state
+          onClose={() => setSelectedUser(null)} 
         />
       )}
     </div>

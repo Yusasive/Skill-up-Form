@@ -83,7 +83,11 @@ export default function PricingPage() {
 
   return (
     <div className="max-w-3xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Pricing and Payment</h1>
+      <header className="sticky top-0 bg-white shadow-lg rounded-lg p-6 mb-6">
+        <h1 className="text-4xl font-extrabold text-green-700 text-center">
+          Pricing and Payment
+        </h1>
+      </header>
       <CourseDetails skills={skills} selectedSkill={selectedSkill} />
       <PriceSummary
         originalPrice={originalPrice}
