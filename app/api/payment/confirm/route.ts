@@ -19,7 +19,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Verify the transaction with Flutterwave
     const verifyResponse = await fetch(
       `https://api.flutterwave.com/v3/transactions/${transactionId}/verify`,
       {
@@ -32,8 +31,7 @@ export async function POST(req: NextRequest) {
 
     const verifyData = await verifyResponse.json();
 
-    let paymentStatus = "Pending"; // Default status
-
+    let paymentStatus = "Pending"; 
     if (verifyData.status === "success") {
       console.log("Transaction verified successfully:", verifyData);
       paymentStatus = "Paid";
@@ -42,7 +40,6 @@ export async function POST(req: NextRequest) {
       paymentStatus = "Failed";
     }
 
-    // Save user data to database
     const user = await createUser({
       ...userData,
       paymentStatus,
@@ -55,7 +52,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Added Payment status in case of "Pending" or other transitions
     await updateUserPaymentStatus(user.toString(), paymentStatus);
 
     return NextResponse.json({

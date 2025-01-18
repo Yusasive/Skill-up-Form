@@ -4,13 +4,8 @@ import { getAllUsers } from "@/lib/models/user";
 
 export async function GET() {
   try {
-    // Fetch skills
-    const skills = await getAllSkills(); // [{ name: "Frontend Development" }, ...]
-
-    // Fetch users
-    const users = await getAllUsers(); // [{ skills: "Frontend Development", ... }, ...]
-
-    // Count users under each skill
+    const skills = await getAllSkills();
+    const users = await getAllUsers(); 
     const skillCounts = skills.map((skill) => {
       const count = users.filter(
         (user) => user.skills.toLowerCase() === skill.name.toLowerCase()

@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { updateSkill, deleteSkill } from "@/lib/models/skills";
 
-// Handle PUT request to update a skill
 export async function PUT(
   req: NextRequest,
   context: { params: { id: string } }
 ) {
   try {
-    const { id } = context.params; // Access params correctly (no await needed here)
+    const { id } = context.params;
     const { name, price, description } = await req.json();
 
-    // Validate request body
     if (!name || !price || !description) {
       return NextResponse.json(
         { error: "All fields (name, price, description) are required." },
@@ -18,7 +16,6 @@ export async function PUT(
       );
     }
 
-    // Update the skill
     const success = await updateSkill(id, name, price, description);
 
     if (!success) {
@@ -38,15 +35,12 @@ export async function PUT(
   }
 }
 
-// Handle DELETE request to delete a skill
 export async function DELETE(
   req: NextRequest,
   context: { params: { id: string } }
 ) {
   try {
-    const { id } = context.params; // Access params correctly (no await needed here)
-
-    // Delete the skill
+    const { id } = context.params; 
     const success = await deleteSkill(id);
 
     if (!success) {
