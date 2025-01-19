@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import SkillsOverview from "@/components/dashboard/SkillsOverview";
 import UsersTable from "@/components/dashboard/UsersTable";
 import UserDetailsModal from "@/components/dashboard/UserDetailsModal";
-import { User } from "@/types/types"; // Ensure you import User from a central location
+import { User } from "@/types/types"; 
 
 interface Skill {
   name: string;
@@ -14,13 +14,12 @@ interface Skill {
 export default function UsersPage() {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
-  const [users, setUsers] = useState<User[]>([]); // Ensure that the user state matches the correct type
+  const [users, setUsers] = useState<User[]>([]); 
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [loadingSkills, setLoadingSkills] = useState(true);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch skills when the component mounts
   useEffect(() => {
     async function fetchSkills() {
       try {
@@ -41,7 +40,6 @@ export default function UsersPage() {
     fetchSkills();
   }, []);
 
-  // Fetch users based on the selected skill
   useEffect(() => {
     if (!selectedSkill) return;
 
@@ -53,7 +51,7 @@ export default function UsersPage() {
           throw new Error("Failed to fetch users data.");
         }
         const usersData = await usersResponse.json();
-        setUsers(usersData); 
+        setUsers(usersData);
       } catch (error) {
         setError("Failed to load users. Please try again.");
       } finally {
@@ -71,14 +69,11 @@ export default function UsersPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 p-6">
-      {/* Header */}
       <header className="sticky top-0 bg-white shadow-lg rounded-lg p-6 mb-6">
         <h1 className="text-4xl font-extrabold text-green-700 text-center">
           Registration Overview
         </h1>
       </header>
-
-      {/* Error Message */}
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4 relative">
           <span>{error}</span>
@@ -91,15 +86,19 @@ export default function UsersPage() {
         </div>
       )}
 
-      {/* Skills Overview Section */}
       <section className="mb-8">
         <h2 className="text-2xl font-bold text-gray-700 mb-4">
           Skills Distribution
         </h2>
-        <SkillsOverview skills={skills} onSkillClick={handleSkillClick} />
+        {loadingSkills ? (
+          <div className="flex justify-center items-center py-6">
+            <div className="loader ease-linear rounded-full border-4 border-t-4 border-green-500 h-12 w-12"></div>
+          </div>
+        ) : (
+          <SkillsOverview skills={skills} onSkillClick={handleSkillClick} />
+        )}
       </section>
 
-      {/* Users Table Section */}
       {selectedSkill && (
         <section className="bg-white p-6 rounded-xl shadow-lg mb-8">
           <h3 className="text-xl font-semibold text-gray-700 mb-4">
@@ -114,17 +113,16 @@ export default function UsersPage() {
             <UsersTable
               users={users}
               skillName={selectedSkill}
-              onUserClick={(user) => setSelectedUser(user)} 
+              onUserClick={(user) => setSelectedUser(user)}
             />
           )}
         </section>
       )}
 
-      {/* User Details Modal */}
       {selectedUser && (
         <UserDetailsModal
           user={selectedUser}
-          onClose={() => setSelectedUser(null)} 
+          onClose={() => setSelectedUser(null)}
         />
       )}
     </div>
