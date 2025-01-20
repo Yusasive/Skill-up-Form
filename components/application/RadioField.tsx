@@ -1,9 +1,10 @@
 import React from "react";
+import { UseFormRegisterReturn } from "react-hook-form";
 
 interface RadioFieldProps {
   label: string;
   options: string[];
-  register: any;
+  register: UseFormRegisterReturn<string>; // Correctly typed for the specific form field
   error?: string;
 }
 
@@ -21,7 +22,7 @@ const RadioField: React.FC<RadioFieldProps> = ({
           <input
             type="radio"
             value={option}
-            {...register}
+            {...register} 
             className="form-radio text-green-500 focus:ring-green-400"
           />
           <span className="text-sm text-green-900">{option}</span>

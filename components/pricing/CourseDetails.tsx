@@ -23,8 +23,8 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
       <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg shadow-md max-w-lg mx-auto">
         <h3 className="text-lg font-semibold">No Course Details Found</h3>
         <p className="text-sm">
-          We couldn't find details for the selected skill. Please try selecting
-          another skill.
+          We couldn&apos;t find details for the selected skill. Please try
+          selecting another skill.
         </p>
       </div>
     );

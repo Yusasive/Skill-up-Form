@@ -1,9 +1,10 @@
 import React from "react";
+import { UseFormRegisterReturn } from "react-hook-form";
 
 interface SelectFieldProps {
   label: string;
   options: string[];
-  register: any;
+  register: UseFormRegisterReturn<string>; 
   error?: string;
 }
 
@@ -16,7 +17,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
   <div className="mb-4">
     <label className="block text-sm font-medium text-green-800">{label}</label>
     <select
-      {...register}
+      {...register} 
       className={`w-full mt-1 border rounded-md p-2 bg-white text-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 ${
         error ? "border-red-500" : "border-green-300"
       }`}

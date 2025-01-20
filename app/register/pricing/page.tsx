@@ -6,48 +6,66 @@ import CourseDetails from "@/components/pricing/CourseDetails";
 import CouponForm from "@/components/pricing/CouponForm";
 import PriceSummary from "@/components/pricing/PriceSummary";
 
+interface Skill {
+  description: string;
+  name: string;
+  price: number;
+}
+
+interface UserData {
+  skills: string;
+  [key: string]: any;
+}
+
 export default function PricingPage() {
   const router = useRouter();
-  const [userData, setUserData] = useState<any>(null);
-  const [skills, setSkills] = useState<any[]>([]);
+  const [userData, setUserData] = useState<UserData | null>(null); 
+  const [skills, setSkills] = useState<Skill[]>([]); 
   const [selectedSkill, setSelectedSkill] = useState<string>("");
   const [originalPrice, setOriginalPrice] = useState<number>(0);
   const [discountedPrice, setDiscountedPrice] = useState<number>(0);
   const [couponCode, setCouponCode] = useState<string>("");
   const [isCouponApplied, setIsCouponApplied] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+useEffect(() => {
+  const fetchSkills = async () => {
+    try {
+      const response = await fetch("/api/skills");
+      if (response.ok) {
+        const data: Skill[] = await response.json();
 
-  useEffect(() => {
-    const fetchSkills = async () => {
-      try {
-        const response = await fetch("/api/skills");
-        if (response.ok) {
-          const data = await response.json();
-          setSkills(data);
+        const skillsWithDescription = data.map((skill) => ({
+          ...skill,
+          description: skill.description || "No description available", 
+        }));
 
-          const userData = JSON.parse(
-            sessionStorage.getItem("userData") || "{}"
-          );
-          setUserData(userData);
+        setSkills(skillsWithDescription);
 
-          const skill = data.find((s: any) => s.name === userData.skills);
-          if (skill) {
-            setSelectedSkill(skill.name);
-            setOriginalPrice(skill.price);
-            setDiscountedPrice(skill.price);
-          } else {
-            setError("Selected course not available.");
-          }
+        const userData = JSON.parse(sessionStorage.getItem("userData") || "{}");
+        setUserData(userData);
+
+        const skill = skillsWithDescription.find(
+          (s: Skill) => s.name === userData.skills
+        );
+        if (skill) {
+          setSelectedSkill(skill.name);
+          setOriginalPrice(skill.price);
+          setDiscountedPrice(skill.price);
         } else {
-          console.error("Failed to fetch skills.");
+          setError("Selected course not available.");
         }
-      } catch (err) {
-        console.error("Error fetching skills:", err);
+      } else {
+        console.error("Failed to fetch skills.");
       }
-    };
+    } catch (err) {
+      console.error("Error fetching skills:", err);
+    }
+  };
 
-    fetchSkills();
-  }, []);
+  fetchSkills();
+}, []);
+
+      
 
   const handleApplyCoupon = async (code: string) => {
     try {

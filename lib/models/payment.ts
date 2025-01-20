@@ -1,13 +1,20 @@
-import { connectToDatabase } from '@/lib/mongodb';
+import { connectToDatabase } from "@/lib/mongodb";
 
-export async function createPaymentRecord(data: any) {
+interface PaymentData {
+  transactionId: string;
+  amount: number;
+  date: Date;
+  status: string; 
+}
+
+export async function createPaymentRecord(data: PaymentData) {
   const { db } = await connectToDatabase();
-  const result = await db.collection('payments').insertOne(data);
+  const result = await db.collection("payments").insertOne(data);
   return result.insertedId;
 }
 
 export async function getPaymentByTransactionId(transactionId: string) {
   const { db } = await connectToDatabase();
-  const payment = await db.collection('payments').findOne({ transactionId });
+  const payment = await db.collection("payments").findOne({ transactionId });
   return payment;
 }

@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       new Date(expiryDate)
     );
     return NextResponse.json({ success: true, id: couponId });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { success: false, error: "Failed to create coupon" },
       { status: 500 }
@@ -54,8 +54,9 @@ export async function GET(req: Request) {
       const coupons = await getAllCoupons();
       return NextResponse.json(coupons);
     }
-  } catch (error) {
-    console.error("Error fetching coupons:", error);
+  } catch {
+
+    console.error("Error fetching coupons");
     return NextResponse.json(
       { error: "Failed to fetch coupons" },
       { status: 500 }
@@ -64,7 +65,7 @@ export async function GET(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const { code, _id } = await req.json();
+  const { _id } = await req.json(); 
 
   try {
     if (_id) {
@@ -81,8 +82,9 @@ export async function DELETE(req: Request) {
         { status: 400 }
       );
     }
-  } catch (error) {
-    console.error("Error deleting coupon:", error);
+  } catch {
+
+    console.error("Error deleting coupon");
     return NextResponse.json(
       { error: "Failed to delete coupon" },
       { status: 500 }
@@ -101,7 +103,8 @@ export async function PATCH(req: Request) {
           { error: "Failed to update coupon or coupon not found" },
           { status: 404 }
         );
-  } catch (error) {
+  } catch {
+  
     return NextResponse.json(
       { error: "Failed to update coupon" },
       { status: 500 }

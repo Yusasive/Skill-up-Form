@@ -1,9 +1,10 @@
 import React from "react";
+import { UseFormRegisterReturn } from "react-hook-form";
 
 interface TextAreaFieldProps {
   label: string;
   placeholder: string;
-  register: any;
+  register: UseFormRegisterReturn<string>; 
   error?: string;
 }
 
@@ -14,7 +15,6 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
   error,
 }) => (
   <div className="mb-6">
-    {/* Label */}
     <label
       className="block text-sm font-semibold text-green-700 mb-1"
       htmlFor={label.toLowerCase().replace(/\s+/g, "-")}
@@ -22,20 +22,18 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
       {label}
     </label>
 
-    {/* Textarea */}
     <textarea
       id={label.toLowerCase().replace(/\s+/g, "-")}
-      {...register}
+      {...register} 
       className={`w-full mt-1 border rounded-lg p-3 text-sm text-green-900 shadow-sm transition-all focus:outline-none focus:ring-2 ${
         error
           ? "border-red-500 focus:ring-red-400"
           : "border-gray-300 focus:ring-green-400 focus:border-green-400"
       }`}
       placeholder={placeholder}
-      rows={5} 
+      rows={5}
     />
 
-    {/* Error Message */}
     {error && (
       <p className="text-red-500 text-xs mt-2">
         <svg

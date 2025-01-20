@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import SkillsOverview from "@/components/dashboard/SkillsOverview";
 import UsersTable from "@/components/dashboard/UsersTable";
 import UserDetailsModal from "@/components/dashboard/UserDetailsModal";
-import { User } from "@/types/types"; 
+import { User } from "@/types/types";
 
 interface Skill {
   name: string;
@@ -14,7 +14,7 @@ interface Skill {
 export default function UsersPage() {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
-  const [users, setUsers] = useState<User[]>([]); 
+  const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [loadingSkills, setLoadingSkills] = useState(true);
   const [loadingUsers, setLoadingUsers] = useState(false);
@@ -30,7 +30,7 @@ export default function UsersPage() {
         }
         const skillsData = await skillsResponse.json();
         setSkills(skillsData);
-      } catch (error) {
+      } catch {
         setError("Failed to load skills. Please try again.");
       } finally {
         setLoadingSkills(false);
@@ -52,7 +52,7 @@ export default function UsersPage() {
         }
         const usersData = await usersResponse.json();
         setUsers(usersData);
-      } catch (error) {
+      } catch {
         setError("Failed to load users. Please try again.");
       } finally {
         setLoadingUsers(false);

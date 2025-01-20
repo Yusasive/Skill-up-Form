@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,7 +42,6 @@ export default function UserDetailsForm() {
     resolver: zodResolver(schema),
   });
 
-  // Fetch skills from API
   useEffect(() => {
     const fetchSkills = async () => {
       const response = await fetch("/api/skills");

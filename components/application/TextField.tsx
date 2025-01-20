@@ -1,9 +1,10 @@
 import React from "react";
+import { UseFormRegisterReturn } from "react-hook-form";
 
 interface TextFieldProps {
   label: string;
   placeholder: string;
-  register: any;
+  register: UseFormRegisterReturn<string>; 
   error?: string;
 }
 
@@ -16,7 +17,7 @@ const TextField: React.FC<TextFieldProps> = ({
   <div className="mb-4">
     <label className="block text-sm font-medium text-green-800">{label}</label>
     <input
-      {...register}
+      {...register} 
       className={`w-full mt-1 border rounded-md p-2 text-green-900  bg-white focus:outline-none focus:ring-2 focus:ring-green-500 ${
         error ? "border-red-500" : "border-green-300"
       }`}
