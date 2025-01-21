@@ -14,58 +14,62 @@ interface Skill {
 
 interface UserData {
   skills: string;
-  [key: string]: any;
+  name?: string;
+  email?: string;
+  phoneNumber?: string;
+  [key: string]: string | number | boolean | undefined;
 }
 
 export default function PricingPage() {
   const router = useRouter();
-  const [userData, setUserData] = useState<UserData | null>(null); 
-  const [skills, setSkills] = useState<Skill[]>([]); 
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [skills, setSkills] = useState<Skill[]>([]);
   const [selectedSkill, setSelectedSkill] = useState<string>("");
   const [originalPrice, setOriginalPrice] = useState<number>(0);
   const [discountedPrice, setDiscountedPrice] = useState<number>(0);
   const [couponCode, setCouponCode] = useState<string>("");
   const [isCouponApplied, setIsCouponApplied] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-useEffect(() => {
-  const fetchSkills = async () => {
-    try {
-      const response = await fetch("/api/skills");
-      if (response.ok) {
-        const data: Skill[] = await response.json();
 
-        const skillsWithDescription = data.map((skill) => ({
-          ...skill,
-          description: skill.description || "No description available", 
-        }));
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const response = await fetch("/api/skills");
+        if (response.ok) {
+          const data: Skill[] = await response.json();
 
-        setSkills(skillsWithDescription);
+          const skillsWithDescription = data.map((skill) => ({
+            ...skill,
+            description: skill.description || "No description available",
+          }));
 
-        const userData = JSON.parse(sessionStorage.getItem("userData") || "{}");
-        setUserData(userData);
+          setSkills(skillsWithDescription);
 
-        const skill = skillsWithDescription.find(
-          (s: Skill) => s.name === userData.skills
-        );
-        if (skill) {
-          setSelectedSkill(skill.name);
-          setOriginalPrice(skill.price);
-          setDiscountedPrice(skill.price);
+          const userData = JSON.parse(
+            sessionStorage.getItem("userData") || "{}"
+          );
+          setUserData(userData);
+
+          const skill = skillsWithDescription.find(
+            (s: Skill) => s.name === userData.skills
+          );
+          if (skill) {
+            setSelectedSkill(skill.name);
+            setOriginalPrice(skill.price);
+            setDiscountedPrice(skill.price);
+          } else {
+            setError("Selected course not available.");
+          }
         } else {
-          setError("Selected course not available.");
+          console.error("Failed to fetch skills.");
         }
-      } else {
-        console.error("Failed to fetch skills.");
+      } catch (err) {
+        console.error("Error fetching skills:", err);
       }
-    } catch (err) {
-      console.error("Error fetching skills:", err);
-    }
-  };
+    };
 
-  fetchSkills();
-}, []);
-
-      
+    fetchSkills();
+  }, []);
 
   const handleApplyCoupon = async (code: string) => {
     try {
@@ -81,7 +85,7 @@ useEffect(() => {
         const errorData = await response.json();
         setError(errorData.error || "Invalid coupon code.");
       }
-    } catch (err) {
+    } catch {
       setError("Failed to apply coupon. Please try again.");
     }
   };
@@ -97,7 +101,14 @@ useEffect(() => {
     router.push("/register/payment");
   };
 
-  if (!userData) return <p>Loading...</p>;
+  if (!userData)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-green-600 text-lg font-semibold">
+          Loading ...
+        </div>
+      </div>
+    );
 
   return (
     <div className="max-w-3xl mx-auto p-4">
