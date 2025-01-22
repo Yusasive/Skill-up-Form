@@ -1,7 +1,7 @@
 "use client";
 
 import { signIn, useSession } from "next-auth/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function AdminLoginPage() {
@@ -21,7 +21,7 @@ export default function AdminLoginPage() {
     setError("");
 
     const result = await signIn("credentials", {
-      redirect: false,
+      redirect: false, 
       email,
       password,
     });
@@ -29,18 +29,26 @@ export default function AdminLoginPage() {
     setLoading(false);
 
     if (result?.error) {
-      setError(result.error);
+      setError("Invalid email or password.");
     } else {
       router.push("/admin/dashboard");
     }
   };
 
-  if (status === "loading") {
-    return <div>Loading...</div>; 
-  }
+  useEffect(() => {
+    if (session && session.user.role === "admin") {
+      router.push("/admin/dashboard");
+    } else if (session) {
+      router.push("/not-authorized"); 
+    }
+  }, [session, router]);
 
-  if (session) {
-    router.push("/admin/dashboard");
+  if (status === "loading") {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-green-600 text-lg font-semibold">Loading ...</div>
+      </div>
+    );
   }
 
   return (
@@ -79,7 +87,9 @@ export default function AdminLoginPage() {
         </div>
         <button
           type="submit"
-          className={`w-full p-2 rounded-md ${loading ? "bg-gray-500" : "bg-blue-600"} text-white hover:bg-blue-700`}
+          className={`w-full p-2 rounded-md ${
+            loading ? "bg-gray-500" : "bg-blue-600"
+          } text-white hover:bg-blue-700`}
           disabled={loading}
         >
           {loading ? "Logging in..." : "Login"}
