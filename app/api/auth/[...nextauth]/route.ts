@@ -8,6 +8,7 @@ type AdminUser = {
   _id: string;
   email: string;
   password: string;
+  role: string; // Add the role field
 };
 
 export const authOptions: AuthOptions = {
@@ -24,50 +25,46 @@ export const authOptions: AuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          return null;
+          throw new Error("Email and password are required.");
         }
 
         const { db }: { db: Db } = await connectToDatabase();
 
-        let admin = await db
-          .collection<AdminUser>("admins")
-          .findOne({ email: credentials.email });
+        const admin = await db.collection<AdminUser>("admins").findOne({
+          email: credentials.email,
+        });
 
         if (!admin) {
-          const hashedPassword = await bcrypt.hash(credentials.password, 10);
-
-          const result = await db.collection("admins").insertOne({
-            email: credentials.email,
-            password: hashedPassword,
-          });
-
-          admin = {
-            _id: result.insertedId.toString(),
-            email: credentials.email,
-            password: hashedPassword,
-          };
+          throw new Error("No user found with this email.");
         }
 
         const isValidPassword = await bcrypt.compare(
           credentials.password,
           admin.password
         );
+
         if (!isValidPassword) {
-          return null;
+          throw new Error("Invalid password.");
         }
 
-        return { id: admin._id.toString(), email: admin.email };
+        return {
+          id: admin._id.toString(),
+          email: admin.email,
+          role: admin.role,
+        };
       },
     }),
   ],
   session: {
     strategy: "jwt",
+    maxAge: 24 * 60 * 60, // 1 day in seconds
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.email = user.email;
+        token.role = user.role; // Add role to the token
       }
       return token;
     },
@@ -76,6 +73,7 @@ export const authOptions: AuthOptions = {
         ...session.user,
         id: token.id as string,
         email: token.email as string,
+        role: token.role as string, // Add role to the session
       };
       return session;
     },
