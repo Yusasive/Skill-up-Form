@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 import {
   FiHome,
   FiUsers,
@@ -18,6 +19,8 @@ type SidebarProps = {
 
 const Sidebar = ({ onToggle }: SidebarProps) => {
   const [isOpen, setIsOpen] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -34,10 +37,15 @@ const Sidebar = ({ onToggle }: SidebarProps) => {
     onToggle(newIsOpen);
   };
 
-  const handleLogOut = () => {
-    localStorage.removeItem("authToken");
-    sessionStorage.clear();
-    router.push("/admin/login");
+  const handleLogOut = async () => {
+    setIsLoggingOut(true);
+    try {
+      await signOut({ callbackUrl: "/admin/login" });
+    } catch (error) {
+      console.error("Error during logout:", error);
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   return (
@@ -46,6 +54,11 @@ const Sidebar = ({ onToggle }: SidebarProps) => {
         isOpen ? "w-64" : "w-20"
       } bg-green-700 text-white flex flex-col shadow-lg fixed transition-all duration-300`}
     >
+      {loading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="loader"></div>
+        </div>
+      )}
       <div className="p-6 flex items-center justify-between">
         <h2 className={`text-xl font-bold ${isOpen ? "block" : "hidden"}`}>
           Admin Dashboard
@@ -76,10 +89,14 @@ const Sidebar = ({ onToggle }: SidebarProps) => {
       <div className="p-4 mt-auto">
         <button
           onClick={handleLogOut}
-          className="w-full bg-red-500 hover:bg-red-600 py-2 px-4 rounded-lg text-center flex items-center justify-center space-x-2"
+          disabled={isLoggingOut}
+          className={`w-full bg-red-500 hover:bg-red-600 py-2 px-4 rounded-lg text-center flex items-center justify-center space-x-2 ${
+            isLoggingOut ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
           <FiLogOut className="text-xl" />
           <span className={`${isOpen ? "block" : "hidden"}`}>Logout</span>
+          {isLoggingOut && <span className="ml-2 loader"></span>}
         </button>
       </div>
     </div>
