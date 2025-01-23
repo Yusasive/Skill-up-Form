@@ -1,8 +1,26 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getAllUsers } from "@/lib/models/user";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return NextResponse.json(
+        { error: "Unauthorized: No session found" },
+        { status: 401 }
+      );
+    }
+
+    if (session.user.role !== "admin") {
+      return NextResponse.json(
+        { error: "Forbidden: Insufficient permissions" },
+        { status: 403 }
+      );
+    }
+
     const url = new URL(req.url);
     const skill = url.searchParams.get("skill");
 

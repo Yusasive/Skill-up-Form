@@ -26,22 +26,36 @@ export default function AdminLoginPage() {
       password,
     });
 
+
     setLoading(false);
 
+    console.log("Login Result:", result);
+
     if (result?.error) {
-      setError("Invalid email or password.");
+      setError(result.error); 
+    } else if (result?.ok) {
+      if (session?.user?.role === "admin") {
+        router.push("/admin/dashboard");
+      } else {
+        setError("Access denied: You are not an admin.");
+      }
     } else {
-      router.push("/admin/dashboard");
+      setError("Unknown error occurred.");
     }
   };
 
   useEffect(() => {
-    if (session && session.user.role === "admin") {
-      router.push("/admin/dashboard");
-    } else if (session) {
-      router.push("/not-authorized"); 
+    if (status === "loading") return; 
+
+    if (session) {
+      console.log("Session Data:", session);
+      if (session.user?.role === "admin") {
+        router.push("/admin/dashboard");
+      } else {
+        router.push("/not-authorized");
+      }
     }
-  }, [session, router]);
+  }, [session, status, router]);
 
   if (status === "loading") {
     return (
@@ -87,9 +101,7 @@ export default function AdminLoginPage() {
         </div>
         <button
           type="submit"
-          className={`w-full p-2 rounded-md ${
-            loading ? "bg-gray-500" : "bg-blue-600"
-          } text-white hover:bg-blue-700`}
+          className={`w-full p-2 rounded-md ${loading ? "bg-gray-500" : "bg-blue-600"} text-white hover:bg-blue-700`}
           disabled={loading}
         >
           {loading ? "Logging in..." : "Login"}

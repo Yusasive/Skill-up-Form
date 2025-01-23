@@ -6,8 +6,33 @@ import {
   deleteCouponById,
   updateCoupon,
 } from "@/lib/models/coupon";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
+async function verifyAdmin(req: Request) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return NextResponse.json(
+      { error: "Unauthorized: No session found" },
+      { status: 401 }
+    );
+  }
+
+  if (session.user.role !== "admin") {
+    return NextResponse.json(
+      { error: "Forbidden: Insufficient permissions" },
+      { status: 403 }
+    );
+  }
+
+  return null; // No error, proceed with the request
+}
 
 export async function POST(req: Request) {
+  const adminError = await verifyAdmin(req);
+  if (adminError) return adminError;
+
   const { code, discountPercentage, expiryDate } = await req.json();
 
   try {
@@ -26,6 +51,9 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
+  const adminError = await verifyAdmin(req);
+  if (adminError) return adminError;
+
   const { searchParams } = new URL(req.url);
   const code = searchParams.get("code");
 
@@ -55,7 +83,6 @@ export async function GET(req: Request) {
       return NextResponse.json(coupons);
     }
   } catch {
-
     console.error("Error fetching coupons");
     return NextResponse.json(
       { error: "Failed to fetch coupons" },
@@ -65,7 +92,10 @@ export async function GET(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const { _id } = await req.json(); 
+  const adminError = await verifyAdmin(req);
+  if (adminError) return adminError;
+
+  const { _id } = await req.json();
 
   try {
     if (_id) {
@@ -83,7 +113,6 @@ export async function DELETE(req: Request) {
       );
     }
   } catch {
-
     console.error("Error deleting coupon");
     return NextResponse.json(
       { error: "Failed to delete coupon" },
@@ -93,6 +122,9 @@ export async function DELETE(req: Request) {
 }
 
 export async function PATCH(req: Request) {
+  const adminError = await verifyAdmin(req);
+  if (adminError) return adminError;
+
   const { code, updatedFields } = await req.json();
 
   try {
@@ -104,7 +136,6 @@ export async function PATCH(req: Request) {
           { status: 404 }
         );
   } catch {
-  
     return NextResponse.json(
       { error: "Failed to update coupon" },
       { status: 500 }

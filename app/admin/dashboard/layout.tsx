@@ -1,9 +1,8 @@
 "use client";
 
-import { useSession, signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { SessionProvider } from "next-auth/react";
 import Sidebar from "@/components/dashboard/Sidebar";
 
 export default function AdminLayout({
@@ -32,17 +31,15 @@ export default function AdminLayout({
   }
 
   return (
-    <SessionProvider>
-      <div className="flex">
-        <Sidebar onToggle={setIsSidebarOpen} />
-        <main
-          className={`transition-all duration-300 ${
-            isSidebarOpen ? "ml-64" : "ml-20"
-          } w-full min-h-screen bg-gray-50 p-6`}
-        >
-          {children}
-        </main>
-      </div>
-    </SessionProvider>
+    <div className="flex">
+      <Sidebar onToggle={setIsSidebarOpen} />
+      <main
+        className={`transition-all duration-300 ${
+          isSidebarOpen ? "ml-64" : "ml-20"
+        } w-full min-h-screen bg-gray-50 p-6`}
+      >
+        {children}
+      </main>
+    </div>
   );
 }

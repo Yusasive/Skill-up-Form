@@ -1,5 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSkill, getAllSkills } from "@/lib/models/skills";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
+async function verifyAdmin(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return NextResponse.json(
+      { error: "Unauthorized: No session found" },
+      { status: 401 }
+    );
+  }
+
+  if (session.user.role !== "admin") {
+    return NextResponse.json(
+      { error: "Forbidden: Insufficient permissions" },
+      { status: 403 }
+    );
+  }
+
+  return null;  
+}
 
 export async function GET() {
   try {
@@ -15,6 +37,9 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const adminError = await verifyAdmin(req);
+  if (adminError) return adminError;
+
   try {
     const { name, price, description } = await req.json();
 

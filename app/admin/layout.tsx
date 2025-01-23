@@ -3,10 +3,12 @@ export const metadata = {
   description: "Admin Dashboard for managing the application",
 };
 
+import AdminLayout from "./AdminLayout"; 
+
 export default function AdminParentLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return <AdminLayout>{children}</AdminLayout>;
 }

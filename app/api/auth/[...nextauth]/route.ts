@@ -8,7 +8,7 @@ type AdminUser = {
   _id: string;
   email: string;
   password: string;
-  role: string; // Add the role field
+  role: string;
 };
 
 export const authOptions: AuthOptions = {
@@ -57,14 +57,14 @@ export const authOptions: AuthOptions = {
   ],
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, // 1 day in seconds
+    maxAge: 24 * 60 * 60,
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.email = user.email;
-        token.role = user.role; // Add role to the token
+        token.role = user.role;
       }
       return token;
     },
@@ -73,7 +73,7 @@ export const authOptions: AuthOptions = {
         ...session.user,
         id: token.id as string,
         email: token.email as string,
-        role: token.role as string, // Add role to the session
+        role: token.role as string,
       };
       return session;
     },

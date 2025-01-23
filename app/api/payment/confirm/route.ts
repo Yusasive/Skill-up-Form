@@ -1,7 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createUser, updateUserPaymentStatus } from "@/lib/models/user";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
+async function verifyAdmin(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return NextResponse.json(
+      { error: "Unauthorized: No session found" },
+      { status: 401 }
+    );
+  }
+
+  if (session.user.role !== "admin") {
+    return NextResponse.json(
+      { error: "Forbidden: Insufficient permissions" },
+      { status: 403 }
+    );
+  }
+
+  return null;
+}
 
 export async function POST(req: NextRequest) {
+  const adminError = await verifyAdmin(req);
+  if (adminError) return adminError;
+
   try {
     const { transactionId, userData } = await req.json();
 
@@ -31,7 +56,7 @@ export async function POST(req: NextRequest) {
 
     const verifyData = await verifyResponse.json();
 
-    let paymentStatus = "Pending"; 
+    let paymentStatus = "Pending";
     if (verifyData.status === "success") {
       console.log("Transaction verified successfully:", verifyData);
       paymentStatus = "Paid";

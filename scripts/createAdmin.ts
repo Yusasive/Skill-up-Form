@@ -1,18 +1,25 @@
-// import bcrypt from 'bcrypt';
-// import { connectToDatabase } from '@/lib/mongodb';
+require("dotenv").config();
+import { connectToDatabase } from "../lib/mongodb";
+import * as bcrypt from "bcrypt"; 
 
-// async function createAdmin() {
-//   const { db } = await connectToDatabase();
+async function createAdmin(email: string, password: string, role: string) {
 
+  const { db } = await connectToDatabase();
 
-//   const hashedPassword = await bcrypt.hash(password, 10);
+  
+  const hashedPassword = await bcrypt.hash(password, 10);
 
-//   const admin = await db.collection('admins').insertOne({
-//     email,
-//     password: hashedPassword,
-//   });
+  
+  const admin = await db.collection("admins").insertOne({
+    email,
+    password: hashedPassword,
+    role,
+  });
 
-//   console.log('Admin user created:', admin.insertedId);
-// }
+  console.log("Admin user created with ID:", admin.insertedId);
+}
 
-// createAdmin().catch(console.error);
+const email = "";
+const password = "";
+const role = ""; 
+createAdmin(email, password, role).catch(console.error);
