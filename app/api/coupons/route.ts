@@ -9,7 +9,7 @@ import {
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-async function verifyAdmin(req: Request) {
+async function verifyAdmin(_req: Request) {
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -26,7 +26,7 @@ async function verifyAdmin(req: Request) {
     );
   }
 
-  return null; // No error, proceed with the request
+  return null; 
 }
 
 export async function POST(req: Request) {

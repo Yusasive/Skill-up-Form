@@ -19,7 +19,6 @@ type SidebarProps = {
 
 const Sidebar = ({ onToggle }: SidebarProps) => {
   const [isOpen, setIsOpen] = useState(true);
-  const [loading, setLoading] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -54,11 +53,6 @@ const Sidebar = ({ onToggle }: SidebarProps) => {
         isOpen ? "w-64" : "w-20"
       } bg-green-700 text-white flex flex-col shadow-lg fixed transition-all duration-300`}
     >
-      {loading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="loader"></div>
-        </div>
-      )}
       <div className="p-6 flex items-center justify-between">
         <h2 className={`text-xl font-bold ${isOpen ? "block" : "hidden"}`}>
           Admin Dashboard

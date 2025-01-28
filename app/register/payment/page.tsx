@@ -5,9 +5,23 @@ import { useRouter } from "next/navigation";
 import { FlutterWaveButton, closePaymentModal } from "flutterwave-react-v3";
 import { FaMoneyBillWave, FaExclamationTriangle } from "react-icons/fa";
 
+type UserData = {
+  name: string;
+  email: string;
+  phone: string;
+  discountedPrice?: number;
+  originalPrice: number;
+  skills: string;
+};
+
+type FlutterwaveResponse = {
+  status: string;
+  transaction_id: number;
+};
+
 export default function PaymentPage() {
   const router = useRouter();
-  const [userData, setUserData] = useState<any>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
     const storedData = sessionStorage.getItem("userData");
@@ -55,38 +69,38 @@ export default function PaymentPage() {
 
   const fwConfig = {
     ...config,
-    callback: async (response: any) => {
+    callback: (response: FlutterwaveResponse) => {
       if (response.status === "successful") {
         console.log("Payment successful:", response);
-
-        try {
-          const res = await fetch("/api/payment/confirm", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              transactionId: response.transaction_id,
-              userData,
-            }),
-          });
-
-          if (res.ok) {
-            console.log("Payment confirmation successful.");
-            alert("Payment successful!");
-            closePaymentModal();
-            router.push("/register/success");
-          } else {
-            const errorData = await res.json();
-            console.error("Payment confirmation failed:", errorData);
+        fetch("/api/payment/confirm", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            transactionId: response.transaction_id,
+            userData,
+          }),
+        })
+          .then((res) => {
+            if (res.ok) {
+              console.log("Payment confirmation successful.");
+              alert("Payment successful!");
+              closePaymentModal();
+              router.push("/register/success");
+            } else {
+              return res.json().then((errorData) => {
+                console.error("Payment confirmation failed:", errorData);
+                alert(
+                  `Payment was successful, but we could not confirm it. Reason: ${errorData.error || "Unknown error."}`
+                );
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Error confirming payment:", error);
             alert(
-              `Payment was successful, but we could not confirm it. Reason: ${errorData.error || "Unknown error."}`
+              "An error occurred while confirming payment. Please contact support."
             );
-          }
-        } catch (error) {
-          console.error("Error confirming payment:", error);
-          alert(
-            "An error occurred while confirming payment. Please contact support."
-          );
-        }
+          });
       } else {
         alert("Payment failed or was canceled.");
       }

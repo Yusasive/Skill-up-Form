@@ -3,7 +3,7 @@ import { createSkill, getAllSkills } from "@/lib/models/skills";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-async function verifyAdmin(req: NextRequest) {
+async function verifyAdmin(_req: NextRequest) {
   const session = await getServerSession(authOptions);
 
   if (!session) {

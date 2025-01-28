@@ -1,5 +1,7 @@
-require("dotenv").config();
+import { config } from "dotenv";
 import { MongoClient, Db } from "mongodb";
+
+config();
 
 let client: MongoClient | null = null;
 let db: Db | null = null;
