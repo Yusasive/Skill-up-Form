@@ -3,7 +3,14 @@ import { updateSkill, deleteSkill } from "@/lib/models/skills";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-async function verifyAdmin(req: NextRequest) {
+// Use a Promise-based type for context.params
+type Context = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
+async function verifyAdmin(_req: NextRequest) {
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -20,18 +27,15 @@ async function verifyAdmin(req: NextRequest) {
     );
   }
 
-  return null; 
+  return null;
 }
 
-export async function PUT(
-  req: NextRequest,
-  context: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest, context: Context) {
   const adminError = await verifyAdmin(req);
   if (adminError) return adminError;
 
   try {
-    const { id } = context.params;
+    const { id } = await context.params; // Resolve the promise
     const { name, price, description } = await req.json();
 
     if (!name || !price || !description) {
@@ -60,15 +64,12 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  req: NextRequest,
-  context: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest, context: Context) {
   const adminError = await verifyAdmin(req);
   if (adminError) return adminError;
 
   try {
-    const { id } = context.params;
+    const { id } = await context.params; // Resolve the promise
     const success = await deleteSkill(id);
 
     if (!success) {

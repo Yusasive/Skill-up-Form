@@ -2,7 +2,7 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { connectToDatabase } from "@/lib/mongodb";
-import { Db } from "mongodb";
+import type { Db } from "mongodb";
 
 type AdminUser = {
   _id: string;
@@ -11,6 +11,7 @@ type AdminUser = {
   role: string;
 };
 
+// Explicitly type `authOptions` as `NextAuthOptions`
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -57,7 +58,7 @@ export const authOptions: NextAuthOptions = {
   ],
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, // 1 day
+    maxAge: 24 * 60 * 60, // 24 hours
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -78,9 +79,11 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET, // Ensure this environment variable is set
 };
 
+// Explicitly export `authOptions`
 const handler = NextAuth(authOptions);
 
+// Properly export the HTTP methods
 export { handler as GET, handler as POST };
