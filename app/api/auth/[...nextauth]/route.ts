@@ -10,8 +10,6 @@ type AdminUser = {
   password: string;
   role: string;
 };
-
-// Explicitly type `authOptions` as `NextAuthOptions`
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -58,8 +56,7 @@ export const authOptions: NextAuthOptions = {
   ],
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, // 24 hours
-  },
+    maxAge: 24 * 60 * 60, 
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -79,7 +76,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET, // Ensure this environment variable is set
+  secret: process.env.NEXTAUTH_SECRET, 
 };
 
 // Explicitly export `authOptions`
