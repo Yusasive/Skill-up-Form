@@ -88,8 +88,6 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET, 
 
-// Explicitly export `authOptions`
 const handler = NextAuth(authOptions);
 
-// Properly export the HTTP methods
 export { handler as GET, handler as POST };
