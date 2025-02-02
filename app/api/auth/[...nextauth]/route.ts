@@ -4,17 +4,15 @@ import bcrypt from "bcrypt";
 import { connectToDatabase } from "@/lib/mongodb";
 import type { Db, ObjectId } from "mongodb";
 
-// Define the AdminUser type with correct _id type
 type AdminUser = {
-  _id: ObjectId; // Use ObjectId instead of string
+  _id: ObjectId; 
   email: string;
   password: string;
   role: string;
 };
 
-// Define the token type for JWT
 interface CustomJWT extends JWT {
-  id?: string; // Optional because it may not exist initially
+  id?: string; 
   email?: string;
   role?: string;
 }
