@@ -50,7 +50,7 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid password.");
         }
         return {
-          id: admin._id.toString(), // Convert ObjectId to string
+          id: admin._id.toString(),
           email: admin.email,
           role: admin.role,
         };
