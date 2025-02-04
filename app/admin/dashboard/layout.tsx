@@ -17,7 +17,7 @@ export default function AdminLayout({
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/admin/login");
-    } else if (session && session.user.role !== "admin") {
+    } else if (status === "authenticated" && session.user.role !== "admin") {
       router.push("/not-authorized");
     }
   }, [session, status, router]);
@@ -30,16 +30,21 @@ export default function AdminLayout({
     );
   }
 
-  return (
-    <div className="flex">
-      <Sidebar onToggle={setIsSidebarOpen} />
-      <main
-        className={`transition-all duration-300 ${
-          isSidebarOpen ? "ml-64" : "ml-20"
-        } w-full min-h-screen bg-gray-50 p-6`}
-      >
-        {children}
-      </main>
-    </div>
-  );
+  if (status === "authenticated" && session.user.role === "admin") {
+    return (
+      <div className="flex">
+        <Sidebar onToggle={setIsSidebarOpen} />
+        <main
+          className={`transition-all duration-300 ${
+            isSidebarOpen ? "ml-64" : "ml-20"
+          } w-full min-h-screen bg-gray-50 p-6`}
+        >
+          {children}
+        </main>
+      </div>
+    );
+  }
+
+  // If the user is not authenticated or not an admin, return null (or a fallback UI)
+  return null;
 }
