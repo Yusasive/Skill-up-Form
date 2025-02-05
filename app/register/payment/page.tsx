@@ -111,7 +111,7 @@ export default function PaymentPage() {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-50">
+    <div className="min-h-screen flex justify-center items-center bg-gray-50" >
       <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg border border-gray-200 mt-8 w-full sm:w-96">
         <header className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-green-700">Make Payment</h1>

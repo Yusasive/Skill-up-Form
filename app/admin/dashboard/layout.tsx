@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Sidebar from "@/components/dashboard/Sidebar";
 
@@ -13,14 +13,20 @@ export default function AdminLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { data: session, status } = useSession();
   const router = useRouter();
+  const pathname = usePathname(); 
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/admin/login");
-    } else if (status === "authenticated" && session.user.role !== "admin") {
-      router.push("/not-authorized");
-    }
-  }, [session, status, router]);
+useEffect(() => {
+  if (status === "loading") return;  
+
+  if (status === "unauthenticated" && pathname !== "/admin/login") {
+    console.log("Session expired, redirecting to login...");
+    router.push("/admin/login");
+  } else if (status === "authenticated" && session?.user?.role !== "admin") {
+    router.push("/admin/login");
+  }
+}, [session, status, router, pathname]);
+
+
 
   if (status === "loading") {
     return (
@@ -45,6 +51,5 @@ export default function AdminLayout({
     );
   }
 
-  // If the user is not authenticated or not an admin, return null (or a fallback UI)
   return null;
 }

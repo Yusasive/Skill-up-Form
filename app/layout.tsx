@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,7 +15,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "NAMSSN | Unilorin",
-  description: "The official website for the department of Mathemtics, University of Ilorin Chapter.",
+  description:
+    "The official website for the department of Mathemtics, University of Ilorin Chapter.",
 };
 
 export default function RootLayout({
@@ -25,9 +27,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-green-50`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-green-50 min-h-screen flex flex-col`}
       >
         {children}
+        <Footer />
       </body>
     </html>
   );

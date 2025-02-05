@@ -53,7 +53,7 @@ const Sidebar = ({ onToggle }: SidebarProps) => {
         isOpen ? "w-64" : "w-20"
       } bg-green-700 text-white flex flex-col shadow-lg fixed transition-all duration-300`}
     >
-      <div className="p-6 flex items-center justify-between">
+      <div className="p-6 flex items-center space-y-10 justify-between">
         <h2 className={`text-xl font-bold ${isOpen ? "block" : "hidden"}`}>
           Admin Dashboard
         </h2>

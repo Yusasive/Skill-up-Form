@@ -4,7 +4,7 @@ import { UseFormRegisterReturn } from "react-hook-form";
 interface RadioFieldProps {
   label: string;
   options: string[];
-  register: UseFormRegisterReturn<string>; // Correctly typed for the specific form field
+  register: UseFormRegisterReturn<string>;
   error?: string;
 }
 
@@ -14,22 +14,32 @@ const RadioField: React.FC<RadioFieldProps> = ({
   register,
   error,
 }) => (
-  <div className="mb-4">
-    <label className="block text-sm font-medium text-green-600">{label}</label>
-    <div className="flex flex-wrap mt-2">
+  <div className="mb-6">
+    <label className="block text-lg font-bold text-green-700 mb-2">
+      🌱 {label}
+    </label>
+
+    <div className="flex flex-wrap gap-3">
       {options.map((option) => (
-        <label key={option} className="flex items-center space-x-2 mr-4 mb-2">
+        <label
+          key={option}
+          className="flex items-center space-x-2 p-3 bg-green-100 border-2 border-transparent rounded-lg cursor-pointer transition-all duration-300 hover:border-green-500 hover:shadow-lg"
+        >
           <input
             type="radio"
             value={option}
-            {...register} 
-            className="form-radio text-green-500 focus:ring-green-400"
+            {...register}
+            className="hidden peer"
           />
-          <span className="text-sm text-green-900">{option}</span>
+          <div className="w-5 h-5 border-2 border-green-500 rounded-full flex items-center justify-center peer-checked:bg-green-500 peer-checked:border-green-700 transition-all">
+            <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
+          </div>
+          <span className="text-green-900 font-semibold">{option}</span>
         </label>
       ))}
     </div>
-    {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+
+    {error && <p className="text-red-500 text-sm mt-2">⚠ {error}</p>}
   </div>
 );
 

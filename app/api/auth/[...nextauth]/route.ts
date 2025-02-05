@@ -42,9 +42,9 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid password.");
         }
         return {
-          id: admin._id.toString(), 
-          email: admin.email, 
-          role: admin.role,  
+          id: admin._id.toString(),
+          email: admin.email,
+          role: admin.role,
         };
       },
     }),
@@ -55,22 +55,23 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user) { 
-        token.id = user.id;  
-        token.email = user.email;  
-        token.role = user.role;  
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.role = user.role;
       }
       return token;
     },
     async session({ session, token }) {
- 
-      session.user.id = token.id;  
-      session.user.email = token.email;  
-      session.user.role = token.role;  
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.role = (token.role as string) || "user"; 
+      }
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET || "default-secret",  
+  secret: process.env.NEXTAUTH_SECRET || "default-secret",
 };
 
 const handler = NextAuth(authOptions);

@@ -63,9 +63,9 @@ export default function UserDetailsForm() {
   const genders = ["Male", "Female", "Other"];
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-xl">
-      <header className="sticky top-0 bg-white shadow-lg rounded-lg p-6 mb-6">
-        <h1 className="text-4xl font-extrabold text-green-700 text-center">
+    <div className="max-w-4xl mx-auto p-8 bg-white shadow-2xl rounded-2xl border border-gray-100">
+      <header className="sticky top-0 bg-white p-6 mb-8 shadow-lg rounded-lg">
+        <h1 className="text-4xl font-bold text-green-800 text-center">
           Register for a Skill
         </h1>
       </header>
@@ -137,7 +137,7 @@ export default function UserDetailsForm() {
         />
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-6 rounded-lg hover:from-green-700 hover:to-green-800 transition-all"
+          className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-6 rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-300"
         >
           Next
         </button>
