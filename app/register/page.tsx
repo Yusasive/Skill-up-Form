@@ -63,85 +63,92 @@ export default function UserDetailsForm() {
   const genders = ["Male", "Female", "Other"];
 
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-white shadow-2xl rounded-2xl border border-gray-100">
-      <header className="sticky top-0 bg-white p-6 mb-8 shadow-lg rounded-lg">
+    <div className="max-w-7xl mx-auto p-8 bg-white shadow-2xl rounded-2xl border border-gray-100">
+      <header className="sticky top-0 bg-white p-6 mb-8 shadow-lg rounded-lg z-10">
         <h1 className="text-4xl font-bold text-green-800 text-center">
           Register for a Skill
         </h1>
       </header>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <TextField
-          label="Name"
-          placeholder="Enter your name"
-          register={register("name")}
-          error={errors.name?.message}
-        />
-        <TextField
-          label="Email"
-          placeholder="Enter your email"
-          register={register("email")}
-          error={errors.email?.message}
-        />
-        <SelectField
-          label="Gender"
-          options={genders}
-          register={register("gender")}
-          error={errors.gender?.message}
-        />
-        <TextField
-          label="Phone"
-          placeholder="Enter your phone number"
-          register={register("phone")}
-          error={errors.phone?.message}
-        />
-        <SelectField
-          label="Preferred Skill"
-          options={skills}
-          register={register("skills")}
-          error={errors.skills?.message}
-        />
-        <TextField
-          label="Faculty"
-          placeholder="Enter your faculty"
-          register={register("faculty")}
-          error={errors.faculty?.message}
-        />
-        <TextField
-          label="Department"
-          placeholder="Enter your department"
-          register={register("department")}
-          error={errors.department?.message}
-        />
-        <RadioField
-          label="Age"
-          options={ageRanges}
-          register={register("age")}
-          error={errors.age?.message}
-        />
-        <RadioField
-          label="Can you commit 10 hours per week?"
-          options={weeklyCommitmentOptions}
-          register={register("weeklyCommitment")}
-          error={errors.weeklyCommitment?.message}
-        />
-        <TextAreaField
-          label="Why are you interested in this skill?"
-          placeholder="Describe your interest"
-          register={register("interestReason")}
-          error={errors.interestReason?.message}
-        />
-        <TextAreaField
-          label="Any comments?"
-          placeholder="Additional comments (optional)"
-          register={register("comments")}
-        />
-        <button
-          type="submit"
-          className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-6 rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-300"
+
+      <div className="mt-20">
+        {" "}
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-6 z-0 border-2 rounded-lg border-green-300 p-6"
         >
-          Next
-        </button>
-      </form>
+          <TextField
+            label="Name"
+            placeholder="Enter your name"
+            register={register("name")}
+            error={errors.name?.message}
+          />
+          <TextField
+            label="Email"
+            placeholder="Enter your email"
+            register={register("email")}
+            error={errors.email?.message}
+          />
+          <SelectField
+            label="Gender"
+            options={genders}
+            register={register("gender")}
+            error={errors.gender?.message}
+          />
+          <TextField
+            label="Phone"
+            placeholder="Enter your phone number"
+            register={register("phone")}
+            error={errors.phone?.message}
+          />
+          <SelectField
+            label="Preferred Skill"
+            options={skills}
+            register={register("skills")}
+            error={errors.skills?.message}
+          />
+          <TextField
+            label="Faculty"
+            placeholder="Enter your faculty"
+            register={register("faculty")}
+            error={errors.faculty?.message}
+          />
+          <TextField
+            label="Department"
+            placeholder="Enter your department"
+            register={register("department")}
+            error={errors.department?.message}
+          />
+          <RadioField
+            label="Age"
+            options={ageRanges}
+            register={register("age")}
+            error={errors.age?.message}
+          />
+          <RadioField
+            label="Can you commit 10 hours per week?"
+            options={weeklyCommitmentOptions}
+            register={register("weeklyCommitment")}
+            error={errors.weeklyCommitment?.message}
+          />
+          <TextAreaField
+            label="Why are you interested in this skill?"
+            placeholder="Describe your interest"
+            register={register("interestReason")}
+            error={errors.interestReason?.message}
+          />
+          <TextAreaField
+            label="Any comments?"
+            placeholder="Additional comments (optional)"
+            register={register("comments")}
+          />
+          <button
+            type="submit"
+            className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-6 rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-300"
+          >
+            Next
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
