@@ -7,7 +7,7 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  if (!params.id) {
+  if (!params || !params.id) {
     return NextResponse.json({ error: "Missing skill ID" }, { status: 400 });
   }
 
@@ -66,7 +66,7 @@ export async function DELETE(
 ) {
   console.log("DELETE request received:", req.method);
 
-  if (!params.id) {
+  if (!params || !params.id) {
     return NextResponse.json({ error: "Missing skill ID" }, { status: 400 });
   }
 
