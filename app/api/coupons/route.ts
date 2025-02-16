@@ -7,9 +7,9 @@ import {
   updateCoupon,
 } from "@/lib/models/coupon";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/api/auth/authOptions";
 
-async function verifyAdmin(_req: Request) {
+async function verifyAdmin() {
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -26,11 +26,13 @@ async function verifyAdmin(_req: Request) {
     );
   }
 
-  return null; 
+  return null;
 }
 
+
+
 export async function POST(req: Request) {
-  const adminError = await verifyAdmin(req);
+  const adminError = await verifyAdmin();
   if (adminError) return adminError;
 
   const { code, discountPercentage, expiryDate } = await req.json();
@@ -51,7 +53,7 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
-  const adminError = await verifyAdmin(req);
+  const adminError = await verifyAdmin();
   if (adminError) return adminError;
 
   const { searchParams } = new URL(req.url);
@@ -92,7 +94,7 @@ export async function GET(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const adminError = await verifyAdmin(req);
+  const adminError = await verifyAdmin();
   if (adminError) return adminError;
 
   const { _id } = await req.json();
@@ -122,7 +124,7 @@ export async function DELETE(req: Request) {
 }
 
 export async function PATCH(req: Request) {
-  const adminError = await verifyAdmin(req);
+  const adminError = await verifyAdmin();
   if (adminError) return adminError;
 
   const { code, updatedFields } = await req.json();

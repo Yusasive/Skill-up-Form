@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createUser, updateUserPaymentStatus } from "@/lib/models/user";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/api/auth/authOptions";
 
-async function verifyAdmin(_req: NextRequest) {
+async function verifyAdmin() {
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -24,7 +24,7 @@ async function verifyAdmin(_req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const adminError = await verifyAdmin(req);
+  const adminError = await verifyAdmin();
   if (adminError) return adminError;
 
   try {

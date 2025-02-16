@@ -1,4 +1,6 @@
-"use client"; 
+"use client";
+
+import Image from "next/image"; 
 
 export default function ForbiddenPage() {
   return (
@@ -10,13 +12,16 @@ export default function ForbiddenPage() {
         Oopsie woopsie! You’re not allowed here, little explorer! 🍼 <br />
         Maybe try going back before the internet police catch you! 🚓
       </p>
-      <img
-        src="https://media.giphy.com/media/3o7527pa7qs9kCG78A/giphy.gif"
-        alt="Cute baby confused"
-        className="mt-6 w-60 rounded-xl shadow-lg"
-      />
+      <div className="relative mt-6 w-60 h-60">
+        <Image
+          src="https://media.giphy.com/media/3o7527pa7qs9kCG78A/giphy.gif"
+          alt="Cute baby confused"
+          fill 
+          className="rounded-xl shadow-lg object-cover"
+        />
+      </div>
       <button
-        onClick={() => window.history.back()} 
+        onClick={() => window.history.back()}
         className="mt-6 px-6 py-3 bg-blue-500 text-white font-bold text-lg rounded-full shadow-lg hover:bg-blue-600 transition"
       >
         🏃‍♂️ Run Back!

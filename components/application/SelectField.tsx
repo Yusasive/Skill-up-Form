@@ -19,7 +19,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
       🌿 {label}
     </label>
 
-    <div className="relative">
+    <div className="relative z-0">
       <select
         {...register}
         className={`w-full p-3 rounded-xl bg-green-50 text-green-900 border-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 ${
