@@ -3,13 +3,10 @@ import { updateSkill, deleteSkill } from "@/lib/models/skills";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/authOptions";
 
-export async function PUT(
-  req: NextRequest,
-  context: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest, context: Record<string, any>) {
   const { params } = context;
 
-  if (!params || !params.id) {
+  if (!params?.id) {
     return NextResponse.json({ error: "Missing skill ID" }, { status: 400 });
   }
 
@@ -62,12 +59,13 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  req: NextRequest,
-  context: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest, context: Record<string, any>) {
   console.log("DELETE request received:", req.method);
   const { params } = context;
+
+  if (!params?.id) {
+    return NextResponse.json({ error: "Missing skill ID" }, { status: 400 });
+  }
 
   async function verifyAdmin() {
     const session = await getServerSession(authOptions);
