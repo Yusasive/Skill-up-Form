@@ -3,7 +3,11 @@ import { updateSkill, deleteSkill } from "@/lib/models/skills";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/authOptions";
 
-export async function PUT(req: NextRequest, context: Record<string, any>) {
+interface Context {
+  params: { id: string };
+}
+
+export async function PUT(req: NextRequest, context: Context) {
   const { params } = context;
 
   if (!params?.id) {
@@ -59,7 +63,7 @@ export async function PUT(req: NextRequest, context: Record<string, any>) {
   }
 }
 
-export async function DELETE(req: NextRequest, context: Record<string, any>) {
+export async function DELETE(req: NextRequest, context: Context) {
   console.log("DELETE request received:", req.method);
   const { params } = context;
 
