@@ -3,35 +3,27 @@ import { updateSkill, deleteSkill } from "@/lib/models/skills";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/authOptions";
 
+type Params = { id: string };
+
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Params } | unknown
 ) {
-  if (!params || !params.id) {
+  const { params } = context as { params: Params };
+
+  if (!params?.id) {
     return NextResponse.json({ error: "Missing skill ID" }, { status: 400 });
   }
 
   const { id } = params;
 
-  async function verifyAdmin() {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json(
-        { error: "Unauthorized: No session found" },
-        { status: 401 }
-      );
-    }
-    if (session.user.role !== "admin") {
-      return NextResponse.json(
-        { error: "Forbidden: Insufficient permissions" },
-        { status: 403 }
-      );
-    }
-    return null;
+  const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== "admin") {
+    return NextResponse.json(
+      { error: "Unauthorized or insufficient permissions" },
+      { status: 403 }
+    );
   }
-
-  const adminError = await verifyAdmin();
-  if (adminError) return adminError;
 
   try {
     const { name, price, description } = await req.json();
@@ -61,37 +53,25 @@ export async function PUT(
 }
 
 export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Params } | unknown
 ) {
-  console.log("DELETE request received:", req.method);
+  const { params } = context as { params: Params };
 
-  if (!params || !params.id) {
+  if (!params?.id) {
     return NextResponse.json({ error: "Missing skill ID" }, { status: 400 });
   }
 
-  async function verifyAdmin() {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json(
-        { error: "Unauthorized: No session found" },
-        { status: 401 }
-      );
-    }
-    if (session.user.role !== "admin") {
-      return NextResponse.json(
-        { error: "Forbidden: Insufficient permissions" },
-        { status: 403 }
-      );
-    }
-    return null;
+  const { id } = params;
+
+  const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== "admin") {
+    return NextResponse.json(
+      { error: "Unauthorized or insufficient permissions" },
+      { status: 403 }
+    );
   }
 
-  const adminError = await verifyAdmin();
-  if (adminError) return adminError;
-
   try {
-    const { id } = params;
     const success = await deleteSkill(id);
     if (!success) {
       return NextResponse.json(
