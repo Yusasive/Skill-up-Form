@@ -20,7 +20,7 @@ const schema = z.object({
   skills: z.string().min(1, "Preferred skill is required"),
   faculty: z.string().min(1, "Faculty is required"),
   department: z.string().min(1, "Department is required"),
-  age: z.enum(["18-25", "26-35", "36-45", "46+"], {
+  age: z.enum(["15-17", "18-21", "22-25", "26-30", "31-35", "36+"], {
     required_error: "Age range is required",
   }),
   weeklyCommitment: z.enum(["Yes", "No"], {
@@ -58,7 +58,7 @@ export default function UserDetailsForm() {
     router.push("/register/pricing");
   };
 
-  const ageRanges = ["18-25", "26-35", "36-45", "46+"];
+  const ageRanges = ["15-17", "18-21", "22-25", "26-30", "31-35", "36+"];
   const weeklyCommitmentOptions = ["Yes", "No"];
   const genders = ["Male", "Female", "Other"];
 
