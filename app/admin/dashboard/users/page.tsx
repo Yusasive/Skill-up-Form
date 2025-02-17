@@ -69,7 +69,7 @@ export default function UsersPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 p-6">
-      <header className="sticky top-0 bg-white shadow-lg rounded-lg p-6 mb-6">
+      <header className="sticky top-0 bg-white shadow-lg rounded-lg p-6 mb-6 z-10">
         <h1 className="text-4xl font-extrabold text-green-700 text-center">
           Registration Overview
         </h1>

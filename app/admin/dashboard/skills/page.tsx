@@ -132,7 +132,7 @@ export default function SkillsPage() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <header className="sticky top-0 bg-white shadow-lg rounded-lg p-6 mb-6">
+      <header className="sticky top-0 bg-white shadow-lg rounded-lg p-6 mb-6 z-10">
         <h1 className="text-4xl font-extrabold text-green-700 text-center">
           Manage Skills
         </h1>

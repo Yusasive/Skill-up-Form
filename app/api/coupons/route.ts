@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { ObjectId } from "mongodb";
 import {
   createCoupon,
   getCoupon,
@@ -29,13 +30,19 @@ async function verifyAdmin() {
   return null;
 }
 
-
-
+// CREATE COUPON (Admin Only)
 export async function POST(req: Request) {
   const adminError = await verifyAdmin();
   if (adminError) return adminError;
 
   const { code, discountPercentage, expiryDate } = await req.json();
+
+  if (!code || !discountPercentage || !expiryDate) {
+    return NextResponse.json(
+      { error: "Missing required fields" },
+      { status: 400 }
+    );
+  }
 
   try {
     const couponId = await createCoupon(
@@ -52,10 +59,8 @@ export async function POST(req: Request) {
   }
 }
 
+// GET COUPONS (Anyone Can Access)
 export async function GET(req: Request) {
-  const adminError = await verifyAdmin();
-  if (adminError) return adminError;
-
   const { searchParams } = new URL(req.url);
   const code = searchParams.get("code");
 
@@ -84,8 +89,8 @@ export async function GET(req: Request) {
       const coupons = await getAllCoupons();
       return NextResponse.json(coupons);
     }
-  } catch {
-    console.error("Error fetching coupons");
+  } catch (error) {
+    console.error("Error fetching coupons:", error);
     return NextResponse.json(
       { error: "Failed to fetch coupons" },
       { status: 500 }
@@ -93,29 +98,34 @@ export async function GET(req: Request) {
   }
 }
 
+// DELETE COUPON (Admin Only)
 export async function DELETE(req: Request) {
   const adminError = await verifyAdmin();
   if (adminError) return adminError;
 
   const { _id } = await req.json();
 
+  if (!_id || !ObjectId.isValid(_id)) {
+    console.error("Invalid or missing ID:", _id);
+    return NextResponse.json(
+      { error: "Invalid or missing ID" },
+      { status: 400 }
+    );
+  }
+
   try {
-    if (_id) {
-      const success = await deleteCouponById(_id);
-      return success
-        ? NextResponse.json({ success: true })
-        : NextResponse.json(
-            { error: "Failed to delete coupon by ID" },
-            { status: 404 }
-          );
-    } else {
-      return NextResponse.json(
-        { error: "No valid identifier provided for deletion" },
-        { status: 400 }
-      );
+    console.log("Attempting to delete coupon with ID:", _id);
+    const success = await deleteCouponById(String(_id)); // Pass as string
+
+    if (!success) {
+      console.error("Coupon not found for ID:", _id);
+      return NextResponse.json({ error: "Coupon not found" }, { status: 404 });
     }
-  } catch {
-    console.error("Error deleting coupon");
+
+    console.log("Coupon deleted successfully:", _id);
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error deleting coupon:", error);
     return NextResponse.json(
       { error: "Failed to delete coupon" },
       { status: 500 }
@@ -123,21 +133,36 @@ export async function DELETE(req: Request) {
   }
 }
 
+
+
+// UPDATE COUPON (Admin Only)
 export async function PATCH(req: Request) {
   const adminError = await verifyAdmin();
   if (adminError) return adminError;
 
   const { code, updatedFields } = await req.json();
 
+  if (!code || typeof code !== "string") {
+    return NextResponse.json(
+      { error: "Invalid or missing coupon code" },
+      { status: 400 }
+    );
+  }
+
+  if (!updatedFields || typeof updatedFields !== "object") {
+    return NextResponse.json(
+      { error: "Invalid or missing update fields" },
+      { status: 400 }
+    );
+  }
+
   try {
     const success = await updateCoupon(code, updatedFields);
     return success
       ? NextResponse.json({ success: true })
-      : NextResponse.json(
-          { error: "Failed to update coupon or coupon not found" },
-          { status: 404 }
-        );
-  } catch {
+      : NextResponse.json({ error: "Coupon not found" }, { status: 404 });
+  } catch (error) {
+    console.error("Error updating coupon:", error);
     return NextResponse.json(
       { error: "Failed to update coupon" },
       { status: 500 }
