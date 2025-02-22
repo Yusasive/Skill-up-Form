@@ -8,13 +8,13 @@ import Link from "next/link";
 
 export default function HeroSection() {
   return (
-    <section className="bg-[#FFFFFF] px-7 md:px-12 lg:px-32 flex flex-col-reverse lg:flex-row items-center justify-between min-h-screen">
+    <section className="bg-[#FFFFFF] pt-28 lg:pt-16 px-7 md:px-12 lg:px-32 flex flex-col-reverse lg:flex-row items-center justify-between min-h-screen">
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         whileInView={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         viewport={{ once: true }}
-        className="text-left max-w-2xl space-y-6 lg:space-y-8"
+        className="text-left max-w-2xl space-y-6 lg:space-y-8 mb-8"
       >
         <h1 className="text-3xl md:text-5xl lg:text-5xl  font-semibold text-[#252525] leading-tight">
           Level Up Your Skills with NAMSSN&apos;s Skill Up Program!

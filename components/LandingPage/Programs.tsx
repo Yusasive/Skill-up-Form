@@ -26,7 +26,7 @@ export default function HeroSection() {
           viewport={{ once: true }}
           className="text-left max-w-2xl space-y-6 lg:space-y-8"
         >
-          <h1 className="text-3xl md:text-5xl lg:text-5xl  font-semibold text-[#252525] leading-tight">
+          <h1 className="text-3xl md:text-5xl lg:text-5xl mt-4 md:mt-0 font-semibold text-[#252525] leading-tight">
             What is the Skill Up Program?
           </h1>
           <p className="text-base md:text-lg font-normal text-[#555555] mt-2 md:mt-4">
