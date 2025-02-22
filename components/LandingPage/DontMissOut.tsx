@@ -10,7 +10,7 @@ export default function DontMissOut() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <span className="text-gray-500">Don</span>'t{" "}
+        <span className="text-gray-500">Don</span>&apos;t{" "}
         <span className="text-white">Miss</span>{" "}
         <span className="text-white lg:text-gray-400">Out!</span>
       </motion.h2>
