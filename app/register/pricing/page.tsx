@@ -104,16 +104,14 @@ export default function PricingPage() {
   if (!userData)
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="text-green-600 text-lg font-semibold">
-          Loading ...
-        </div>
+        <div className="text-gray-600 text-lg font-semibold">Loading ...</div>
       </div>
     );
 
   return (
     <div className="max-w-3xl mx-auto p-4 min-h-screen">
       <header className="sticky top-0 bg-white shadow-lg rounded-lg p-6 mb-6">
-        <h1 className="text-4xl font-extrabold text-green-700 text-center">
+        <h1 className="text-4xl font-extrabold text-gray-700 text-center">
           Pricing and Payment
         </h1>
       </header>
@@ -138,7 +136,7 @@ export default function PricingPage() {
         </button>
         <button
           onClick={handleNext}
-          className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+          className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700"
         >
           Next
         </button>

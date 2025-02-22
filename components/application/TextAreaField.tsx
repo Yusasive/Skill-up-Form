@@ -20,7 +20,7 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
     <div className="mb-6">
       <label
         htmlFor={id}
-        className="block text-lg font-bold text-green-800 mb-2"
+        className="block text-lg font-bold text-gray-800 mb-2"
       >
         📝 {label}
       </label>
@@ -29,16 +29,14 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
         <textarea
           id={id}
           {...register}
-          className={`w-full border-2 p-3 rounded-xl bg-green-50 text-green-900 text-lg shadow-md transition-all duration-300 focus:outline-none focus:ring-2 ${
+          className={`w-full border-2 p-3 rounded-xl bg-gray-50 text-gray-900 text-lg shadow-md transition-all duration-300 focus:outline-none focus:ring-2 ${
             error
               ? "border-red-500 focus:ring-red-400"
-              : "border-green-300 focus:ring-green-500 focus:border-green-500"
+              : "border-gray-300 focus:ring-gray-500 focus:border-gray-500"
           }`}
           placeholder={placeholder}
           rows={5}
         />
-
-      
       </div>
 
       {error && (

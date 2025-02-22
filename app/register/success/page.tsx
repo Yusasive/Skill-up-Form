@@ -7,11 +7,11 @@ export default function SuccessPage() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-green-50">
+    <div className="min-h-screen flex justify-center items-center bg-gray-50">
       <div className="max-w-lg w-full bg-white shadow-lg rounded-lg p-8 text-center">
-        <FaCheckCircle className="mx-auto text-green-600 text-6xl mb-4" />
+        <FaCheckCircle className="mx-auto text-gray-600 text-6xl mb-4" />
 
-        <h1 className="text-3xl font-semibold text-green-600 mb-4">
+        <h1 className="text-3xl font-semibold text-gray-600 mb-4">
           Registration Successful!
         </h1>
 
@@ -21,7 +21,7 @@ export default function SuccessPage() {
 
         <button
           onClick={() => router.push("/register")}
-          className="bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition-all duration-300"
+          className="bg-gray-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-gray-700 transition-all duration-300"
         >
           Go Home
         </button>

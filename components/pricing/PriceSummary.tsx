@@ -23,7 +23,7 @@ const PriceSummary: React.FC<PriceSummaryProps> = ({
           <span className="text-gray-500 line-through text-sm">
             Original Price: #{originalPrice.toFixed(2)}
           </span>
-          <span className="text-3xl font-bold text-green-600">
+          <span className="text-3xl font-bold text-gray-600">
             #{discountedPrice.toFixed(2)}
           </span>
         </>
@@ -35,7 +35,7 @@ const PriceSummary: React.FC<PriceSummaryProps> = ({
     </div>
 
     {isCouponApplied && (
-      <div className="mt-4 bg-green-50 border border-green-200 text-green-700 p-3 rounded-md text-center">
+      <div className="mt-4 bg-green-50 border border-green-200 text-gray-700 p-3 rounded-md text-center">
         <p className="text-sm font-medium">
           Coupon applied successfully! 🎉 You saved{" "}
           <span className="font-bold">

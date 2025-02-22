@@ -15,7 +15,7 @@ const RadioField: React.FC<RadioFieldProps> = ({
   error,
 }) => (
   <div className="mb-6">
-    <label className="block text-lg font-bold text-green-700 mb-2">
+    <label className="block text-lg font-bold text-gray-700 mb-2">
       🌱 {label}
     </label>
 
@@ -23,7 +23,7 @@ const RadioField: React.FC<RadioFieldProps> = ({
       {options.map((option) => (
         <label
           key={option}
-          className="flex items-center space-x-2 p-3 bg-green-100 border-2 border-transparent rounded-lg cursor-pointer transition-all duration-300 hover:border-green-500 hover:shadow-lg"
+          className="flex items-center space-x-2 p-3 bg-gray-100 border-2 border-transparent rounded-lg cursor-pointer transition-all duration-300 hover:border-gray-500 hover:shadow-lg"
         >
           <input
             type="radio"
@@ -31,10 +31,10 @@ const RadioField: React.FC<RadioFieldProps> = ({
             {...register}
             className="hidden peer"
           />
-          <div className="w-5 h-5 border-2 border-green-500 rounded-full flex items-center justify-center peer-checked:bg-green-500 peer-checked:border-green-700 transition-all">
+          <div className="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center peer-checked:bg-gray-500 peer-checked:border-gray-700 transition-all">
             <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
           </div>
-          <span className="text-green-900 font-semibold">{option}</span>
+          <span className="text-gray-900 font-semibold">{option}</span>
         </label>
       ))}
     </div>

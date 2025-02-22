@@ -15,22 +15,22 @@ const SelectField: React.FC<SelectFieldProps> = ({
   error,
 }) => (
   <div className="mb-6">
-    <label className="block text-lg font-bold text-green-800 mb-2">
+    <label className="block text-lg font-bold text-gray-800 mb-2">
       🌿 {label}
     </label>
 
     <div className="relative z-0">
       <select
         {...register}
-        className={`w-full p-3 rounded-xl bg-green-50 text-green-900 border-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 ${
-          error ? "border-red-500" : "border-green-300"
+        className={`w-full p-3 rounded-xl bg-gray-50 text-gray-900 border-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-500 ${
+          error ? "border-red-500" : "border-gray-300"
         } appearance-none cursor-pointer`}
       >
         <option value="" disabled hidden>
           Select an option
         </option>
         {options.map((option) => (
-          <option key={option} value={option} className="text-green-900">
+          <option key={option} value={option} className="text-gray-900">
             {option}
           </option>
         ))}

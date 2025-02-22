@@ -65,7 +65,7 @@ export default function UserDetailsForm() {
   return (
     <div className="max-w-7xl mx-auto p-8 bg-white shadow-2xl rounded-2xl border border-gray-100">
       <header className="sticky top-0 bg-white p-6 mb-8 shadow-lg rounded-lg z-10">
-        <h1 className="text-4xl font-bold text-green-800 text-center">
+        <h1 className="text-4xl font-bold text-gray-800 text-center">
           Register for a Skill
         </h1>
       </header>
@@ -74,7 +74,7 @@ export default function UserDetailsForm() {
         {" "}
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="space-y-6 z-0 border-2 rounded-lg border-green-300 p-6"
+          className="space-y-6 z-0 border-2 rounded-lg border-gray-300 p-6"
         >
           <TextField
             label="Name"
@@ -143,7 +143,7 @@ export default function UserDetailsForm() {
           />
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-6 rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-300"
+            className="w-full bg-gradient-to-r from-gray-600 to-gray-700 text-white py-3 px-6 rounded-lg hover:from-gray-700 hover:to-gray-800 transition-all duration-300"
           >
             Next
           </button>

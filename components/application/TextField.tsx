@@ -20,7 +20,7 @@ const TextField: React.FC<TextFieldProps> = ({
     <div className="mb-6">
       <label
         htmlFor={id}
-        className="block text-lg font-bold text-green-800 mb-2"
+        className="block text-lg font-bold text-gray-800 mb-2"
       >
         🌱 {label}
       </label>
@@ -30,10 +30,10 @@ const TextField: React.FC<TextFieldProps> = ({
           id={id}
           {...register}
           placeholder={placeholder}
-          className={`w-full p-3 rounded-xl bg-green-50 text-green-900 text-lg transition-all duration-300 focus:outline-none focus:ring-2 ${
+          className={`w-full p-3 rounded-xl bg-gray-50 text-gray-900 text-lg transition-all duration-300 focus:outline-none focus:ring-2 ${
             error
               ? "border-red-500 focus:ring-red-400"
-              : "border-green-300 focus:ring-green-500 focus:border-green-500"
+              : "border-gray-300 focus:ring-gray-500 focus:border-gray-500"
           }`}
         />
 

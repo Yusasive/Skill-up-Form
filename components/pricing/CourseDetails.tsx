@@ -30,15 +30,15 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
     );
 
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 mb-8 max-w-xl mx-auto border-t-4 border-green-500">
-      <h2 className="text-2xl font-bold text-green-700 mb-4">{skill.name}</h2>
+    <div className="bg-white shadow-lg rounded-lg p-6 mb-8 max-w-xl mx-auto border-t-4 border-gray-500">
+      <h2 className="text-2xl font-bold text-gray-700 mb-4">{skill.name}</h2>
 
       <p className="text-gray-800 text-base leading-relaxed mb-4">
         {skill.description}
       </p>
       {skill.prerequisites && skill.prerequisites.length > 0 && (
         <div className="mb-4">
-          <h3 className="text-lg font-semibold text-green-800 mb-2">
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">
             Prerequisites
           </h3>
           <ul className="list-disc pl-5 text-gray-700 text-sm">
@@ -51,9 +51,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
 
       {skill.duration && (
         <div className="mb-4">
-          <h3 className="text-lg font-semibold text-green-800 mb-2">
-            Duration
-          </h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">Duration</h3>
           <p className="text-gray-700 text-sm">{skill.duration}</p>
         </div>
       )}

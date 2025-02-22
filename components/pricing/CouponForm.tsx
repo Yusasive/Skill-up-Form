@@ -40,7 +40,7 @@ const CouponForm: React.FC<CouponFormProps> = ({
         disabled={!couponCode}
         className={`px-5 py-2 text-sm font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 transition-all ${
           couponCode
-            ? "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-400"
+            ? "bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-400"
             : "bg-gray-300 text-gray-500 cursor-not-allowed"
         }`}
       >
