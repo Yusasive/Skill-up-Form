@@ -1,21 +1,21 @@
 "use client";
 
-import HeroSection from "@/components/HeroSection";
-import FeaturesSection from "@/components/FeaturesSection";
-import CallToAction from "@/components/CallToAction";
-import FloatingElements from "@/components/FloatingElements";
-import AnimatedDivider from "@/components/AnimatedDivider";
-import WaveDivider from "@/components/WaveDivider";
+import HeroSection from "@/components/LandingPage/Hero";
+import Navbar from "@/components/LandingPage/NavBar";
+import Programs from "@/components/LandingPage/Programs";
+import Member from "@/components/LandingPage/Member";
+import Skills from "@/components/LandingPage/Skills";
+import Join from "@/components/LandingPage/Join";
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-green-400 to-green-600 text-white font-sans">
-      <FloatingElements />
+    <div>
+      <Navbar />
       <HeroSection />
-      <WaveDivider />
-      <AnimatedDivider />
-      <FeaturesSection />
-      <CallToAction />
+      <Programs />
+      <Member />
+      <Skills />
+      <Join />
     </div>
   );
 }

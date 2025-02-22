@@ -2,7 +2,7 @@
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-r from-green-800 to-green-600 text-white py-6 shadow-md">
+    <footer className="bg-gradient-to-r from-[#252525] to-[#6e6d6d] text-white py-6 shadow-md">
       <div className="container mx-auto flex flex-col items-center text-center">
         {/* Footer Content */}
         <h2 className="text-2xl font-extrabold tracking-wide drop-shadow-lg">
