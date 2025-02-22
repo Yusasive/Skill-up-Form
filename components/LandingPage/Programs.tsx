@@ -33,7 +33,8 @@ export default function HeroSection() {
             The NAMSSN Skill Up Program is an initiative designed to equip
             students with practical skills that complement their mathematical
             science education. Our goal is to bridge the gap between theoretical
-            knowledge and industry needs.
+            knowledge and industry needs, culminating in an exciting Hackathon
+            to showcase and apply these skills.
           </p>
         </motion.div>
 

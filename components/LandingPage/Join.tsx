@@ -4,7 +4,10 @@ import { motion } from "framer-motion";
 const reasons = [
   { id: 1, text: "Hands-on training by experienced professionals." },
   { id: 2, text: "Certificate of Completion" },
-  { id: 3, text: "Internship and job opportunities" },
+  {
+    id: 3,
+    text: "Exciting Hackathon experience with opportunities for internships",
+  },
   { id: 4, text: "Networking with industry experts" },
   { id: 5, text: "Practical projects and mentorship" },
 ];

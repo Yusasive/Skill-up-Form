@@ -5,7 +5,7 @@ import { Calendar, MapPin } from "lucide-react";
 const timeline = [
   { id: 1, icon: <Calendar size={24} />, text: "Registration Opens: 20/2/2025" },
   { id: 2, icon: <Calendar size={24} />, text: "Training Starts: [Date]" },
-  { id: 3, icon: <Calendar size={24} />, text: "Duration: [X weeks/months]" },
+  { id: 3, icon: <Calendar size={24} />, text: "Duration: 3 weeks" },
   {
     id: 4,
     icon: <MapPin size={24} />,

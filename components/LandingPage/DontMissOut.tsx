@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function DontMissOut() {
   return (
@@ -23,14 +24,17 @@ export default function DontMissOut() {
         Secure your spot today and take the first step towards mastering
         valuable skills.
       </motion.p>
-      <motion.button
-        className="bg-white text-black font-semibold py-3 px-6 rounded-full shadow-lg hover:bg-gray-300"
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
-      >
-        Register Now
-      </motion.button>
+      <Link href="/register">
+        {" "}
+        <motion.button
+          className="bg-white text-black font-semibold py-3 px-6 rounded-full shadow-lg hover:bg-gray-300"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+        >
+          Register Now
+        </motion.button>
+      </Link>
     </section>
   );
 }
