@@ -77,7 +77,7 @@ export default function UserDetailsForm() {
           className="space-y-6 z-0 border-2 rounded-lg border-gray-300 p-6"
         >
           <TextField
-            label="Name"
+            label="Full Name"
             placeholder="Enter your name"
             register={register("name")}
             error={errors.name?.message}

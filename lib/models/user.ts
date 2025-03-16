@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { connectToDatabase } from "@/lib/mongodb";
 
 export interface User {
@@ -38,13 +37,13 @@ export async function getUsersBySkill(skillName: string) {
   return users;
 }
 
-export async function updateUserPaymentStatus(userId: string, status: string) {
+export async function updateUserPaymentStatus(email: string, status: string) {
   const { db } = await connectToDatabase();
-  const result = await db
-    .collection("users")
-    .updateOne(
-      { _id: new ObjectId(userId) },
-      { $set: { paymentStatus: status } }
-    );
+
+  const result = await db.collection("users").updateOne(
+    { email: email }, 
+    { $set: { paymentStatus: status } }
+  );
+
   return result.modifiedCount > 0;
 }

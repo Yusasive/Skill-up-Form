@@ -20,7 +20,7 @@ export default function SuccessPage() {
         </p>
 
         <button
-          onClick={() => router.push("/register")}
+          onClick={() => router.push("/")}
           className="bg-gray-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-gray-700 transition-all duration-300"
         >
           Go Home

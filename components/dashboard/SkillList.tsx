@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FiEdit, FiTrash } from "react-icons/fi"; // Import icons
+import { FiEdit, FiTrash } from "react-icons/fi"; 
 
 type Skill = {
   _id: string;
@@ -9,7 +9,7 @@ type Skill = {
 };
 
 type SkillListProps = {
-  skills: Skill[];
+  skills?: Skill[];  
   onUpdateSkill: (
     id: string,
     newName: string,
@@ -20,7 +20,7 @@ type SkillListProps = {
 };
 
 const SkillList = ({
-  skills,
+  skills = [], 
   onUpdateSkill,
   onDeleteSkill,
 }: SkillListProps) => {
@@ -28,9 +28,11 @@ const SkillList = ({
   const [editableSkill, setEditableSkill] = useState<Skill | null>(null);
 
   const handleEditClick = (skill: Skill) => {
+    if (!skill?._id) return; 
     setEditMode(skill._id);
     setEditableSkill(skill);
   };
+
   const handleSaveClick = () => {
     if (editableSkill) {
       onUpdateSkill(
@@ -56,106 +58,121 @@ const SkillList = ({
             <th className="px-6 py-4 text-center">Actions</th>
           </tr>
         </thead>
+
         {/* Table Body */}
         <tbody className="divide-y divide-gray-200">
-          {skills.map((skill, index) => (
-            <tr
-              key={skill._id}
-              className={`hover:bg-green-50 ${
-                index % 2 === 0 ? "bg-gray-50" : "bg-white"
-              } transition-colors`}
-            >
-              {/* Skill Name */}
-              <td className="px-6 py-4 text-sm text-gray-800">
-                {editMode === skill._id ? (
-                  <input
-                    type="text"
-                    value={editableSkill?.name || ""}
-                    onChange={(e) =>
-                      setEditableSkill({
-                        ...editableSkill!,
-                        name: e.target.value,
-                      })
-                    }
-                    className="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
-                  />
-                ) : (
-                  <span>{skill.name}</span>
-                )}
-              </td>
-              {/* Skill Price */}
-              <td className="px-6 py-4 text-sm text-gray-800">
-                {editMode === skill._id ? (
-                  <input
-                    type="number"
-                    value={editableSkill?.price || ""}
-                    onChange={(e) =>
-                      setEditableSkill({
-                        ...editableSkill!,
-                        price: Number(e.target.value),
-                      })
-                    }
-                    className="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
-                    min={0}
-                  />
-                ) : (
-                  <span>#{skill.price.toFixed(2)}</span>
-                )}
-              </td>
-              {/* Skill Description */}
-              <td className="px-6 py-4 text-sm text-gray-800">
-                {editMode === skill._id ? (
-                  <textarea
-                    value={editableSkill?.description || ""}
-                    onChange={(e) =>
-                      setEditableSkill({
-                        ...editableSkill!,
-                        description: e.target.value,
-                      })
-                    }
-                    className="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none resize-none"
-                    rows={2}
-                  />
-                ) : (
-                  <span>{skill.description}</span>
-                )}
-              </td>
-              {/* Actions */}
-              <td className="px-6 py-4 text-center space-x-2">
-                {editMode === skill._id ? (
-                  <>
-                    <button
-                      onClick={handleSaveClick}
-                      className="bg-green-500 text-white text-sm px-4 py-2 rounded-lg shadow hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 transition-transform transform hover:scale-105"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={() => setEditMode(null)}
-                      className="bg-gray-500 text-white text-sm px-4 py-2 rounded-lg shadow hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-transform transform hover:scale-105"
-                    >
-                      Cancel
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => handleEditClick(skill)}
-                      className="bg-blue-500 text-white text-sm px-4 py-2 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-transform transform hover:scale-105"
-                    >
-                      <FiEdit className="inline-block mr-2" /> Edit
-                    </button>
-                    <button
-                      onClick={() => onDeleteSkill(skill._id)}
-                      className="bg-red-500 text-white text-sm px-4 py-2 rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 transition-transform transform hover:scale-105"
-                    >
-                      <FiTrash className="inline-block mr-2" /> Delete
-                    </button>
-                  </>
-                )}
+          {skills.length > 0 ? (
+            skills.map((skill, index) =>
+              skill ? (
+                <tr
+                  key={skill._id}
+                  className={`hover:bg-green-50 ${
+                    index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                  } transition-colors`}
+                >
+                  {/* Skill Name */}
+                  <td className="px-6 py-4 text-sm text-gray-800">
+                    {editMode === skill._id ? (
+                      <input
+                        type="text"
+                        value={editableSkill?.name || ""}
+                        onChange={(e) =>
+                          setEditableSkill((prev) =>
+                            prev ? { ...prev, name: e.target.value } : null
+                          )
+                        }
+                        className="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                      />
+                    ) : (
+                      <span>{skill.name}</span>
+                    )}
+                  </td>
+
+                  {/* Skill Price */}
+                  <td className="px-6 py-4 text-sm text-gray-800">
+                    {editMode === skill._id ? (
+                      <input
+                        type="number"
+                        value={editableSkill?.price || ""}
+                        onChange={(e) =>
+                          setEditableSkill((prev) =>
+                            prev
+                              ? { ...prev, price: Number(e.target.value) }
+                              : null
+                          )
+                        }
+                        className="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                        min={0}
+                      />
+                    ) : (
+                      <span>#{skill.price.toFixed(2)}</span>
+                    )}
+                  </td>
+
+                  {/* Skill Description */}
+                  <td className="px-6 py-4 text-sm text-gray-800">
+                    {editMode === skill._id ? (
+                      <textarea
+                        value={editableSkill?.description || ""}
+                        onChange={(e) =>
+                          setEditableSkill((prev) =>
+                            prev
+                              ? { ...prev, description: e.target.value }
+                              : null
+                          )
+                        }
+                        className="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none resize-none"
+                        rows={2}
+                      />
+                    ) : (
+                      <span>{skill.description}</span>
+                    )}
+                  </td>
+
+                  {/* Actions */}
+                  <td className="px-6 py-4 text-center space-x-2">
+                    {editMode === skill._id ? (
+                      <>
+                        <button
+                          onClick={handleSaveClick}
+                          className="bg-green-500 text-white text-sm px-4 py-2 rounded-lg shadow hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 transition-transform transform hover:scale-105"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={() => setEditMode(null)}
+                          className="bg-gray-500 text-white text-sm px-4 py-2 rounded-lg shadow hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-transform transform hover:scale-105"
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => handleEditClick(skill)}
+                          className="bg-blue-500 text-white text-sm px-4 py-2 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-transform transform hover:scale-105"
+                        >
+                          <FiEdit className="inline-block mr-2" /> Edit
+                        </button>
+                        <button
+                          onClick={() => onDeleteSkill(skill._id)}
+                          className="bg-red-500 text-white text-sm px-4 py-2 rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 transition-transform transform hover:scale-105"
+                        >
+                          <FiTrash className="inline-block mr-2" /> Delete
+                        </button>
+                      </>
+                    )}
+                  </td>
+                </tr>
+              ) : null
+            )
+          ) : (
+            <tr>
+              <td colSpan={4} className="p-6 text-center text-gray-500 text-sm">
+                No skills available
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>

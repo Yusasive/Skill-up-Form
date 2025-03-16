@@ -2,8 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { FlutterWaveButton, closePaymentModal } from "flutterwave-react-v3";
+import { PaystackButton } from "react-paystack";
 import { FaMoneyBillWave, FaExclamationTriangle } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; 
 
 type UserData = {
   name: string;
@@ -14,31 +16,26 @@ type UserData = {
   skills: string;
 };
 
-type FlutterwaveResponse = {
-  status: string;
-  transaction_id: number;
-};
-
 export default function PaymentPage() {
   const router = useRouter();
   const [userData, setUserData] = useState<UserData | null>(null);
+  const publicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || "";
 
   useEffect(() => {
     const storedData = sessionStorage.getItem("userData");
     if (storedData) {
       setUserData(JSON.parse(storedData));
     } else {
-      router.push("/register");
+      router.push("/");
     }
   }, [router]);
 
   if (!userData) return null;
 
-  const { name, email, phone, discountedPrice, originalPrice, skills } =
-    userData;
+  const { email, discountedPrice, originalPrice, skills } = userData;
 
-  if (!process.env.NEXT_PUBLIC_FLUTTERWAVE_PUBLIC_KEY) {
-    console.error("Flutterwave public key is not defined. Check .env setup.");
+  if (!publicKey) {
+    console.error("Paystack public key is not defined. Check .env setup.");
     return (
       <div className="p-4 text-red-500 bg-red-50 border border-red-300 rounded-lg flex items-center space-x-2">
         <FaExclamationTriangle className="text-lg" />
@@ -49,69 +46,42 @@ export default function PaymentPage() {
     );
   }
 
-  const config = {
-    public_key: process.env.NEXT_PUBLIC_FLUTTERWAVE_PUBLIC_KEY as string,
-    tx_ref: `rave-${Date.now()}`,
-    amount: discountedPrice || originalPrice,
-    currency: "NGN",
-    payment_options: "card, banktransfer, ussd",
-    customer: {
-      email: email,
-      phone_number: phone,
-      name: name,
-    },
-    customizations: {
-      title: "SkillUp Payment",
-      description: `Payment for ${skills} course`,
-      logo: "/logo.png",
-    },
-  };
+  const amount = (discountedPrice || originalPrice) * 100; // Convert NGN to kobo
 
-  const fwConfig = {
-    ...config,
-    callback: (response: FlutterwaveResponse) => {
-      if (response.status === "successful") {
-        console.log("Payment successful:", response);
-        fetch("/api/payment/confirm", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            transactionId: response.transaction_id,
-            userData,
-          }),
-        })
-          .then((res) => {
-            if (res.ok) {
-              console.log("Payment confirmation successful.");
-              alert("Payment successful!");
-              closePaymentModal();
-              router.push("/register/success");
-            } else {
-              return res.json().then((errorData) => {
-                console.error("Payment confirmation failed:", errorData);
-                alert(
-                  `Payment was successful, but we could not confirm it. Reason: ${errorData.error || "Unknown error."}`
-                );
-              });
-            }
-          })
-          .catch((error) => {
-            console.error("Error confirming payment:", error);
-            alert(
-              "An error occurred while confirming payment. Please contact support."
-            );
-          });
+  const handleSuccess = async (reference: any) => {
+    try {
+      const response = await fetch("/api/payment/confirm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          reference: reference.reference,
+          userData,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.paymentStatus === "Paid") {
+        toast.success("✅ Payment successful!");
+        setTimeout(() => {
+          router.push("/register/success");
+        }, 2000); 
       } else {
-        alert("Payment failed or was canceled.");
+        toast.error(
+          `⚠️ Payment was successful, but verification failed. Contact support. (${data.error || "Unknown error"})`
+        );
       }
-    },
-    onClose: () => {
-      console.log("Payment modal closed.");
-    },
+    } catch (error) {
+      toast.error(
+        "❌ An error occurred while verifying payment. Please contact support."
+      );
+    }
   };
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-50">
+      <ToastContainer position="top-right" autoClose={3000} />
+
       <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg border border-gray-200 mt-8 w-full sm:w-96">
         <header className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-gray-700">Make Payment</h1>
@@ -141,9 +111,15 @@ export default function PaymentPage() {
             )}
           </p>
         </section>
-        <FlutterWaveButton
-          {...fwConfig}
+
+        <PaystackButton
+          publicKey={publicKey}
+          email={email}
+          amount={amount}
+          currency="NGN"
           text="Pay Now"
+          onSuccess={handleSuccess}
+          onClose={() => toast.info("⚠️ Payment process was closed.")}
           className="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold text-lg hover:bg-gray-700 transition-all w-full"
         />
       </div>

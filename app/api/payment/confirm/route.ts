@@ -1,75 +1,44 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createUser, updateUserPaymentStatus } from "@/lib/models/user";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/authOptions";
-
-async function verifyAdmin() {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return NextResponse.json(
-      { error: "Unauthorized: No session found" },
-      { status: 401 }
-    );
-  }
-
-  if (session.user.role !== "admin") {
-    return NextResponse.json(
-      { error: "Forbidden: Insufficient permissions" },
-      { status: 403 }
-    );
-  }
-
-  return null;
-}
 
 export async function POST(req: NextRequest) {
-  const adminError = await verifyAdmin();
-  if (adminError) return adminError;
-
   try {
-    const { transactionId, userData } = await req.json();
+    const { reference, userData } = await req.json();
 
-    if (!transactionId) {
+    if (!reference) {
       return NextResponse.json(
-        { error: "Transaction ID is required." },
+        { error: "Transaction reference is required." },
         { status: 400 }
       );
     }
 
-    if (!userData || !userData.email || !userData.skills) {
+    if (!userData?.email || !userData?.skills) {
       return NextResponse.json(
         { error: "Incomplete user data provided." },
         { status: 400 }
       );
     }
 
+    // Verify transaction with Paystack
     const verifyResponse = await fetch(
-      `https://api.flutterwave.com/v3/transactions/${transactionId}/verify`,
+      `https://api.paystack.co/transaction/verify/${reference}`,
       {
         headers: {
-          Authorization: `Bearer ${process.env.FLUTTERWAVE_SECRET_KEY}`,
+          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
           "Content-Type": "application/json",
         },
       }
     );
-
     const verifyData = await verifyResponse.json();
 
-    let paymentStatus = "Pending";
-    if (verifyData.status === "success") {
-      console.log("Transaction verified successfully:", verifyData);
-      paymentStatus = "Paid";
-    } else {
-      console.error("Verification failed:", verifyData);
-      paymentStatus = "Failed";
-    }
+    // Determine payment status
+    const paymentStatus =
+      verifyData.status === true && verifyData.data?.status === "success"
+        ? "Paid"
+        : "Failed";
 
-    const user = await createUser({
-      ...userData,
-      paymentStatus,
-    });
-
+    // Save user payment status
+    const user = await createUser({ ...userData, paymentStatus });
     if (!user) {
       return NextResponse.json(
         { error: "Failed to save user data." },
@@ -79,12 +48,20 @@ export async function POST(req: NextRequest) {
 
     await updateUserPaymentStatus(user.toString(), paymentStatus);
 
-    return NextResponse.json({
-      message: "Payment confirmation processed successfully.",
-      paymentStatus,
-    });
-  } catch (error) {
-    console.error("Error verifying transaction:", error);
+    if (paymentStatus === "Paid") {
+      return NextResponse.json(
+        { message: "Payment confirmed successfully.", paymentStatus },
+        { status: 200 }
+      );
+    } else {
+      return NextResponse.json(
+        {
+          error: "Payment verification failed despite successful transaction.",
+        },
+        { status: 400 }
+      );
+    }
+  } catch {
     return NextResponse.json(
       { error: "Internal server error." },
       { status: 500 }

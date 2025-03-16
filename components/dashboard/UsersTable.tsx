@@ -39,7 +39,7 @@ export default function UsersTable({
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
 
-  const USERS_PER_PAGE = 5;
+  const USERS_PER_PAGE = 10;
 
   useEffect(() => {
     const searchResults = users.filter(
@@ -126,52 +126,63 @@ export default function UsersTable({
         <table className="w-full text-sm border border-gray-200 rounded-lg">
           <thead>
             <tr className="bg-green-100 text-gray-700">
+              <th className="p-4 text-left font-semibold">S/N</th>
               <th className="p-4 text-left font-semibold">Name</th>
               <th className="p-4 text-left font-semibold">Email</th>
               <th className="p-4 text-left font-semibold">Payment Status</th>
               <th className="p-4 text-left font-semibold">Actions</th>
             </tr>
           </thead>
+
           <tbody>
             {paginatedUsers.length > 0 ? (
-              paginatedUsers.map((user, index) => (
-                <tr
-                  key={index}
-                  className={`${
-                    index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                  } hover:bg-green-50 transition-colors duration-150`}
-                >
-                  <td className="p-4 font-medium text-gray-800">{user.name}</td>
-                  <td className="p-4 font-medium text-gray-600">
-                    {user.email}
-                  </td>
-                  <td className="p-4">
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm font-semibold text-white ${
-                        user.paymentStatus === "Paid"
-                          ? "bg-green-500"
-                          : user.paymentStatus === "Pending"
-                            ? "bg-yellow-500"
-                            : "bg-red-500"
-                      }`}
-                    >
-                      {user.paymentStatus}
-                    </span>
-                  </td>
-                  <td className="p-4">
-                    <button
-                      className="flex items-center bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow-md transition-transform transform hover:scale-105"
-                      onClick={() => onUserClick(user)}
-                    >
-                      View Details
-                    </button>
-                  </td>
-                </tr>
-              ))
+              paginatedUsers.map((user, index) => {
+                const serialNumber =
+                  (currentPage - 1) * USERS_PER_PAGE + index + 1;
+                return (
+                  <tr
+                    key={user.email}
+                    className={`${
+                      index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                    } hover:bg-green-50 transition-colors duration-150`}
+                  >
+                    <td className="p-4 font-medium text-gray-800">
+                      {serialNumber}
+                    </td>{" "}
+                    <td className="p-4 font-medium text-gray-800">
+                      {user.name}
+                    </td>
+                    <td className="p-4 font-medium text-gray-600">
+                      {user.email}
+                    </td>
+                    <td className="p-4">
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-semibold text-white ${
+                          user.paymentStatus === "Paid"
+                            ? "bg-green-500"
+                            : user.paymentStatus === "Pending"
+                              ? "bg-yellow-500"
+                              : "bg-red-500"
+                        }`}
+                      >
+                        {user.paymentStatus}
+                      </span>
+                    </td>
+                    <td className="p-4">
+                      <button
+                        className="flex items-center bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow-md transition-transform transform hover:scale-105"
+                        onClick={() => onUserClick(user)}
+                      >
+                        View Details
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
             ) : (
               <tr>
                 <td
-                  colSpan={4}
+                  colSpan={5}
                   className="p-6 text-center text-gray-500 text-sm"
                 >
                   No users found.
