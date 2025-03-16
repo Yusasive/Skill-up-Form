@@ -2,10 +2,15 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { PaystackButton } from "react-paystack";
+import dynamic from "next/dynamic";
 import { FaMoneyBillWave, FaExclamationTriangle } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; 
+import "react-toastify/dist/ReactToastify.css";
+
+const PaystackButton = dynamic(
+  () => import("react-paystack").then((mod) => mod.PaystackButton),
+  { ssr: false }
+);
 
 type UserData = {
   name: string;
@@ -19,9 +24,11 @@ type UserData = {
 export default function PaymentPage() {
   const router = useRouter();
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [isClient, setIsClient] = useState(false);
   const publicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || "";
 
   useEffect(() => {
+    setIsClient(true); 
     const storedData = sessionStorage.getItem("userData");
     if (storedData) {
       setUserData(JSON.parse(storedData));
@@ -30,7 +37,7 @@ export default function PaymentPage() {
     }
   }, [router]);
 
-  if (!userData) return null;
+  if (!isClient || !userData) return null; 
 
   const { email, discountedPrice, originalPrice, skills } = userData;
 
@@ -46,9 +53,9 @@ export default function PaymentPage() {
     );
   }
 
-  const amount = (discountedPrice || originalPrice) * 100; // Convert NGN to kobo
+  const amount = (discountedPrice || originalPrice) * 100;
 
-  const handleSuccess = async (reference: any) => {
+  const handleSuccess = async (reference: { reference: string }) => {
     try {
       const response = await fetch("/api/payment/confirm", {
         method: "POST",
@@ -65,13 +72,14 @@ export default function PaymentPage() {
         toast.success("✅ Payment successful!");
         setTimeout(() => {
           router.push("/register/success");
-        }, 2000); 
+        }, 2000);
       } else {
         toast.error(
           `⚠️ Payment was successful, but verification failed. Contact support. (${data.error || "Unknown error"})`
         );
       }
-    } catch (error) {
+    } catch (err) {
+      console.error("Payment verification error:", err);
       toast.error(
         "❌ An error occurred while verifying payment. Please contact support."
       );
