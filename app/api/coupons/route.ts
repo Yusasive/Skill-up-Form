@@ -29,8 +29,7 @@ async function verifyAdmin() {
 
   return null;
 }
-
-// CREATE COUPON (Admin Only)
+ 
 export async function POST(req: Request) {
   const adminError = await verifyAdmin();
   if (adminError) return adminError;
@@ -59,7 +58,6 @@ export async function POST(req: Request) {
   }
 }
 
-// GET COUPONS (Anyone Can Access)
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const code = searchParams.get("code");
@@ -98,7 +96,6 @@ export async function GET(req: Request) {
   }
 }
 
-// DELETE COUPON (Admin Only)
 export async function DELETE(req: Request) {
   const adminError = await verifyAdmin();
   if (adminError) return adminError;
@@ -115,7 +112,7 @@ export async function DELETE(req: Request) {
 
   try {
     console.log("Attempting to delete coupon with ID:", _id);
-    const success = await deleteCouponById(String(_id)); // Pass as string
+    const success = await deleteCouponById(String(_id));  
 
     if (!success) {
       console.error("Coupon not found for ID:", _id);
@@ -134,8 +131,7 @@ export async function DELETE(req: Request) {
 }
 
 
-
-// UPDATE COUPON (Admin Only)
+ 
 export async function PATCH(req: Request) {
   const adminError = await verifyAdmin();
   if (adminError) return adminError;

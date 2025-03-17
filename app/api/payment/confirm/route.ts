@@ -19,7 +19,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Verify transaction with Paystack
     const verifyResponse = await fetch(
       `https://api.paystack.co/transaction/verify/${reference}`,
       {
@@ -31,13 +30,11 @@ export async function POST(req: NextRequest) {
     );
     const verifyData = await verifyResponse.json();
 
-    // Determine payment status
     const paymentStatus =
       verifyData.status === true && verifyData.data?.status === "success"
         ? "Paid"
         : "Failed";
-
-    // Save user payment status
+    
     const user = await createUser({ ...userData, paymentStatus });
     if (!user) {
       return NextResponse.json(

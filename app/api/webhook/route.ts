@@ -13,10 +13,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const body = await req.text(); // Use raw text to verify signature
+    const body = await req.text();
     const signature = req.headers.get("x-paystack-signature");
 
-    // 🔍 1️⃣ Validate Signature
     if (!signature) {
       console.error("🚨 Missing x-paystack-signature header!");
       return NextResponse.json({ error: "Signature missing" }, { status: 400 });
@@ -31,7 +30,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
     }
 
-    // 🔍 2️⃣ Process Webhook Event
     const { event, data } = JSON.parse(body);
     console.log("✅ Webhook Event Received:", event);
 
@@ -47,7 +45,6 @@ export async function POST(req: NextRequest) {
 
       const status = data.status === "success" ? "Paid" : "Failed";
 
-      // 🛠️ Update Payment Status in Database
       await updateUserPaymentStatus(email, status);
       console.log(`✅ Payment status updated for ${email}: ${status}`);
     }
