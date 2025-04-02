@@ -9,6 +9,8 @@ import TextField from "@/components/application/TextField";
 import SelectField from "@/components/application/SelectField";
 import RadioField from "@/components/application/RadioField";
 import TextAreaField from "@/components/application/TextAreaField";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -35,6 +37,18 @@ type FormValues = z.infer<typeof schema>;
 export default function UserDetailsForm() {
   const router = useRouter();
   const [skills, setSkills] = useState<string[]>([]);
+  const [isDeadlinePassed, setIsDeadlinePassed] = useState(false);
+  const [timeLeft, setTimeLeft] = useState<{
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+  }>({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
 
   const {
     register,
@@ -46,14 +60,51 @@ export default function UserDetailsForm() {
 
   useEffect(() => {
     const fetchSkills = async () => {
-      const response = await fetch("/api/skills");
-      const data = await response.json();
-      setSkills(data.map((skill: { name: string }) => skill.name));
+      try {
+        const response = await fetch("/api/skills");
+        const data = await response.json();
+        setSkills(data.map((skill: { name: string }) => skill.name));
+      } catch (error) {
+        console.error("Error fetching skills:", error);
+      }
     };
     fetchSkills();
   }, []);
 
+  const registrationDeadline = new Date("2025-04-05T23:59:59").getTime();
+
+  useEffect(() => {
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const difference = registrationDeadline - now;
+
+      if (difference <= 0) {
+        setIsDeadlinePassed(true);
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+
+      setTimeLeft({
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        hours: Math.floor(
+          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        ),
+        minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((difference % (1000 * 60)) / 1000),
+      });
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(interval);
+  }, [registrationDeadline]);
+
   const onSubmit: SubmitHandler<FormValues> = (data) => {
+    if (isDeadlinePassed) {
+      toast.error("The registration deadline has passed.");
+      return;
+    }
     sessionStorage.setItem("userData", JSON.stringify(data));
     router.push("/register/pricing");
   };
@@ -68,10 +119,14 @@ export default function UserDetailsForm() {
         <h1 className="text-4xl font-bold text-gray-800 text-center">
           Register for a Skill
         </h1>
+
+        <p className="text-center text-xl py-4 font-medium text-gray-600">
+          Registration closes in: {timeLeft.days}d {timeLeft.hours}h{" "}
+          {timeLeft.minutes}m {timeLeft.seconds}s
+        </p>
       </header>
 
       <div className="mt-20">
-        {" "}
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="space-y-6 z-0 border-2 rounded-lg border-gray-300 p-6"
@@ -141,14 +196,21 @@ export default function UserDetailsForm() {
             placeholder="Additional comments (optional)"
             register={register("comments")}
           />
+
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-gray-600 to-gray-700 text-white py-3 px-6 rounded-lg hover:from-gray-700 hover:to-gray-800 transition-all duration-300"
+            disabled={isDeadlinePassed}
+            className={`w-full bg-gradient-to-r from-gray-600 to-gray-700 text-white py-3 px-6 rounded-lg 
+  hover:from-gray-700 hover:to-gray-800 transition-all duration-300 ${
+    isDeadlinePassed ? "bg-gray-400 cursor-not-allowed" : ""
+  }`}
           >
             Next
           </button>
         </form>
       </div>
+
+      <ToastContainer />
     </div>
   );
 }
