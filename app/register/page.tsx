@@ -71,7 +71,7 @@ export default function UserDetailsForm() {
     fetchSkills();
   }, []);
 
-  const registrationDeadline = new Date("2025-04-05T23:59:59").getTime();
+  const registrationDeadline = new Date("2025-04-11T23:59:59").getTime();
 
   useEffect(() => {
     const updateCountdown = () => {

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Calendar, MapPin } from "lucide-react";
 
-const registrationDeadline = new Date("2025-04-05T23:59:59").getTime();
+const registrationDeadline = new Date("2025-04-11T23:59:59").getTime();
 const trainingStartDate = new Date("2025-04-08T09:00:00").getTime();
 
 const timeline = [
